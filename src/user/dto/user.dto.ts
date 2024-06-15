@@ -29,6 +29,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     readonly email: string;
 
+    @IsString()
+    @IsNotEmpty()
+    readonly password: string
+
     @IsArray()
     @MaxLength(10, { each: true })
     readonly skills: string[];

@@ -30,6 +30,7 @@ model User {
   workSkills         String[]
   role               String
   createdAt          DateTime @default(now())
+  password           String 
   // workExperience   WorkExperience? @relation(fields: [workExperienceId], references: [id])
   // ownerProject     OwnerProject?   @relation(fields: [ownerProjectId], references: [id])
 }
