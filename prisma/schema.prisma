@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+// gafete demi alaburguerrrrrrrrrrr asi mero
 model User {
   id                 Int      @id @default(autoincrement())
   username           String?  @unique @db.VarChar(10)
