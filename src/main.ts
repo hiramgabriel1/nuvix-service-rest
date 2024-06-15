@@ -15,9 +15,13 @@ async function bootstrap() {
     methods: ['POST', 'GET', 'DELETE', 'PATH', 'PUT'],
     // maxAge:
   });
-  app.useGlobalPipes(new ValidationPipe({
-    forbidNonWhitelisted: true,
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   logger.log(`Applicaction listening on port ${envs.port}`);
 }

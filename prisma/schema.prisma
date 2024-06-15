@@ -7,4 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 
+model User {
+  id               Int             @id @default(autoincrement())
+  username         String?         @db.VarChar(10)
+  avatar_url       String
+  profesion        String
+  email            String          @unique
+  skills           String[]
+  descriptionLong  String          @db.VarChar(80)
+  about            String          @db.VarChar(300)
+  social           String[]
+  workExperienceId Int?            @unique
+  ownerProjectId   Int?            @unique
+  workExperience   WorkExperience? @relation(fields: [workExperienceId], references: [id])
+  ownerProject     OwnerProject?   @relation(fields: [ownerProjectId], references: [id])
+}
+
+model WorkExperience {
+  id             Int      @id @default(autoincrement())
+  companyName    String
+  employmentType String
+  titleWork      String   @db.VarChar(50)
+  isCurrent      Boolean
+  date           DateTime
+  description    String   @db.VarChar(230)
+  user           User?
+}
+
+model OwnerProject {
+  id                 Int      @id @default(autoincrement())
+  titleProject       String   @db.VarChar(50)
+  descriptionProject String   @db.VarChar(230)
+  skills             String[]
+  role               String
+  user               User?
+}
+
+model example {
+  id Int @id @default(autoincrement())
+
+  username String
+}

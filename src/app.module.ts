@@ -3,6 +3,7 @@ import { UserModule } from './user/user.module';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       },
     ]),
     UserModule,
+    PrismaModule
   ],
   controllers: [UserController],
   providers: [UserService],
