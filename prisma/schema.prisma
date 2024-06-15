@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id                 Int      @id @default(autoincrement())
-  username           String?  @db.VarChar(10)
+  username           String?  @unique @db.VarChar(10)
   avatar_url         String
   profesion          String
   email              String   @unique
@@ -58,5 +58,5 @@ model User {
 model example {
   id Int @id @default(autoincrement())
 
-  username String
+  username String?
 }

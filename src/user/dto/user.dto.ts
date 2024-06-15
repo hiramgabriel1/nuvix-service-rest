@@ -4,63 +4,18 @@ import {
     IsEmail,
     IsNotEmpty,
     IsString,
-    Max,
     MaxLength,
     ValidateNested,
+    IsOptional,
+    IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class WorkExperienceDto {
+export class CreateUserDto {
     @IsString()
-    @IsNotEmpty()
-    readonly companyName: string;
-
-    @IsString()
-    @IsNotEmpty()
-    readonly employmentType: string;
-
-    @IsString()
-    @IsNotEmpty()
-    @Max(50)
-    readonly titleWork: string;
-
-    @IsBoolean()
-    readonly isCurrent: Boolean;
-
-    @IsDate()
-    readonly date: Date;
-
-    @IsString()
-    @IsNotEmpty()
-    @Max(230)
-    readonly description: string;
-}
-
-export class OwnerProjectDto {
-    @IsString()
-    @IsNotEmpty()
-    @Max(50)
-    readonly titleProject: string;
-
-    @IsString()
-    @IsNotEmpty()
-    @Max(230)
-    readonly descriptionProject: string;
-
-    @MaxLength(50, {
-        each: true,
-    })
-    readonly skills: string[];
-
-    @IsString()
-    @IsNotEmpty()
-    readonly role: string;
-}
-
-export class UserDto {
-    @IsString()
-    @Max(10)
-    readonly username: string;
+    @IsOptional()
+    @MaxLength(10)
+    readonly username?: string;
 
     @IsString()
     @IsNotEmpty()
@@ -74,31 +29,64 @@ export class UserDto {
     @IsNotEmpty()
     readonly email: string;
 
-    @MaxLength(10, {
-        each: true,
-    })
+    @IsArray()
+    @MaxLength(10, { each: true })
     readonly skills: string[];
 
     @IsString()
     @IsNotEmpty()
-    @Max(80)
+    @MaxLength(80)
     readonly descriptionLong: string;
 
     @IsString()
     @IsNotEmpty()
-    @Max(300)
+    @MaxLength(300)
     readonly about: string;
 
-    @MaxLength(10, {
-        each: true,
-    })
+    @IsArray()
+    @MaxLength(10, { each: true })
     readonly social: string[];
 
-    @ValidateNested()
-    @Type(() => WorkExperienceDto)
-    readonly workExperience: WorkExperienceDto;
+    @IsString()
+    @IsNotEmpty()
+    readonly companyName: string;
 
-    @ValidateNested()
-    @Type(() => OwnerProjectDto)
-    readonly ownerProject: OwnerProjectDto;
+    @IsString()
+    @IsNotEmpty()
+    readonly employmentType: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(50)
+    readonly titleWork: string;
+
+    @IsBoolean()
+    readonly isCurrent: boolean;
+
+    @IsDate()
+    @IsNotEmpty()
+    readonly date: Date;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(230)
+    readonly description: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(50)
+    readonly titleProject: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(230)
+    readonly descriptionProject: string;
+
+    @IsArray()
+    @MaxLength(50, { each: true })
+    readonly workSkills: string[];
+
+    @IsString()
+    @IsNotEmpty()
+    readonly role: string;
 }
