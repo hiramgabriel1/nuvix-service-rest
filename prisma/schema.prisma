@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id                 Int      @id @default(autoincrement())
-  username           String?  @unique @db.VarChar(10)
+  username           String?   @unique @db.VarChar(15)
   avatar_url         String
   profesion          String
   email              String   @unique
@@ -21,12 +21,12 @@ model User {
   ownerProjectId     String
   companyName        String
   employmentType     String
-  titleWork          String   @db.VarChar(50)
+  titleWork          String   @db.VarChar(80)
   isCurrent          Boolean
   date               DateTime @default(now())
-  description        String   @db.VarChar(230)
-  titleProject       String   @db.VarChar(50)
-  descriptionProject String   @db.VarChar(230)
+  description        String   @db.VarChar(300)
+  titleProject       String   @db.VarChar(80)
+  descriptionProject String   @db.VarChar(300)
   workSkills         String[]
   role               String
   createdAt          DateTime @default(now())
@@ -44,4 +44,6 @@ model Post {
   isPayment       Boolean  @default(false)
   skills          String[]
   author          User     @relation(fields: [authorId], references: [id])
+  // createdAt       DateTime @default(now())
+  // modifiedAt      DateTime @default(now())
 }

@@ -22,7 +22,7 @@ export class UserService {
         });
     }
 
-    async addUser(user: CreateUserDto): Promise<User> {
+    async addUser(user: CreateUserDto) {
         const userExists = await this.isUserExists(user);
 
         if (userExists) {
@@ -33,7 +33,7 @@ export class UserService {
         const dataUser = {
             ...user,
             password: hashedPassword,
-            createdAt: new Date(),
+            // createdAt: new Date(),
         };
 
         return this.prisma.user.create({

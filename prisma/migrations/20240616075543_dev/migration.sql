@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "username" VARCHAR(10),
+    "username" VARCHAR(10) NOT NULL,
     "avatar_url" TEXT NOT NULL,
     "profesion" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -9,8 +9,8 @@ CREATE TABLE "User" (
     "descriptionLong" VARCHAR(80) NOT NULL,
     "about" VARCHAR(300) NOT NULL,
     "social" TEXT[],
-    "workExperienceId" INTEGER,
-    "ownerProjectId" INTEGER,
+    "workExperience" TEXT NOT NULL,
+    "ownerProjectId" TEXT NOT NULL,
     "companyName" TEXT NOT NULL,
     "employmentType" TEXT NOT NULL,
     "titleWork" VARCHAR(50) NOT NULL,
@@ -28,11 +28,17 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "example" (
+CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
-    "username" TEXT,
+    "authorId" INTEGER NOT NULL,
+    "projectTitle" TEXT NOT NULL,
+    "projectLocation" TEXT NOT NULL,
+    "isProjectRemote" BOOLEAN NOT NULL DEFAULT false,
+    "salaryRange" DECIMAL(65,30) NOT NULL,
+    "isPayment" BOOLEAN NOT NULL DEFAULT false,
+    "skills" TEXT[],
 
-    CONSTRAINT "example_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -41,8 +47,5 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_workExperienceId_key" ON "User"("workExperienceId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_ownerProjectId_key" ON "User"("ownerProjectId");
+-- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

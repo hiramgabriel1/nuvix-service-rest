@@ -16,6 +16,7 @@ import { CandidatesListService } from './candidates-list/candidates-list.service
 import { PostsService } from './posts/posts.service';
 import { ChatController } from './chat/chat.controller';
 import { ChatService } from './chat/chat.service';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ChatService } from './chat/chat.service';
     CandidatesListModule,
     ProfileModule,
     ChatModule,
+    ReportsModule,
   ],
   controllers: [
     UserController,
