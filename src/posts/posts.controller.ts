@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -30,7 +31,10 @@ export class PostsController {
   }
 
   @Get('posts/')
-  showPagePosts(@Query('page') page: number, @Query('limit') limit: number) {
+  showPagePosts(
+    @Query('page') page: number,
+    @Query('limit') limit: number
+  ) {
     return this.postsService.showPagePosts(page, limit);
   }
 
@@ -41,5 +45,13 @@ export class PostsController {
     @Body() newContentPost: UpdatePostDto,
   ) {
     return this.postsService.editPost(postId, userId, newContentPost);
+  }
+
+  @Delete('posts/delete/post/:postId/user-posted/:userId')
+  removePost(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('userId', ParseIntPipe) userId: number
+  ) {
+    return this.postsService.removePost(postId, userId);
   }
 }

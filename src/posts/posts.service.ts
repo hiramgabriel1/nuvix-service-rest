@@ -8,8 +8,8 @@ import { CreatePostDto } from './dto/post.dto';
 export class PostsService {
     constructor(private prisma: PrismaService) { }
 
-    async validatePostUser(userId: number, postId: number): Promise<Post | null> {
-        let findPost = await this.prisma.post.findFirst({
+    async validatePostUser(userId: number, postId: number): Promise<Post> {
+        const findPost = await this.prisma.post.findFirst({
             where: {
                 id: postId,
                 authorId: userId,
@@ -17,16 +17,19 @@ export class PostsService {
         });
 
         if (!findPost)
-            throw new BadGatewayException('no existe el post para el usuario');
+            throw new BadGatewayException('No existe el post para el usuario');
 
         return findPost;
     }
 
-    async createPostUser(userId: any, postCreated: CreatePostDto): Promise<Post> {
+    async createPostUser(
+        userId: number,
+        postCreated: CreatePostDto,
+    ): Promise<Post> {
         return this.prisma.post.create({
             data: {
                 ...postCreated,
-                authorId: parseInt(userId),
+                authorId: userId,
             },
         });
     }
@@ -44,7 +47,7 @@ export class PostsService {
     }
 
     showPagePosts(page: number, limit: number) {
-        let skip = (page - 1) * limit;
+        const skip = (page - 1) * limit;
 
         return this.prisma.post.findMany({
             take: limit,
@@ -60,14 +63,35 @@ export class PostsService {
         postId: number,
         userId: number,
         newContentPost: UpdatePostDto,
-    ): Promise<Post> {
-        await this.validatePostUser(postId, userId);
-
-        return this.prisma.post.update({
-            where: { id: postId },
+    ): Promise<{ message: string; updatedPost: Post }> {
+        await this.validatePostUser(userId, postId);
+        const updatedData = await this.prisma.post.update({
+            where: {
+                id: postId,
+            },
             data: newContentPost,
         });
+
+        return {
+            message: `updated data ${(await updatedData).id}`,
+            updatedPost: updatedData,
+        };
     }
 
-    async removePost() { }
+    async removePost(
+        postId: number,
+        userId: number,
+    ): Promise<{ message: string; removedData: Post }> {
+        await this.validatePostUser(userId, postId);
+        const removedData = await this.prisma.post.delete({
+            where: {
+                id: postId,
+            },
+        });
+
+        return {
+            message: 'eliminado exitosaente',
+            removedData: removedData,
+        };
+    }
 }
