@@ -22,6 +22,10 @@ export class UserService {
 
     async addUser(user: CreateUserDto): Promise<User> {
         const userExists = await this.isUserExists(user);
+        if (userExists) {
+            throw new BadRequestException('El usuario ya existe');
+        }
+
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const dataUser = {
             ...user,
@@ -29,10 +33,8 @@ export class UserService {
             createdAt: new Date(),
         };
 
-        if (userExists) throw new BadRequestException('el usuario ya existe de pana');
-
         return this.prisma.user.create({
-            data: { ...dataUser },
+            data: dataUser,
         });
     }
 }

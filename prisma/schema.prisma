@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-// gafete demi alaburguerrrrrrrrrrr asi mero
+
 model User {
   id                 Int      @id @default(autoincrement())
   username           String?  @unique @db.VarChar(10)
@@ -17,8 +17,8 @@ model User {
   descriptionLong    String   @db.VarChar(80)
   about              String   @db.VarChar(300)
   social             String[]
-  workExperienceId   Int?     @unique
-  ownerProjectId     Int?     @unique
+  workExperience     String
+  ownerProjectId     String
   companyName        String
   employmentType     String
   titleWork          String   @db.VarChar(50)
@@ -30,34 +30,15 @@ model User {
   workSkills         String[]
   role               String
   createdAt          DateTime @default(now())
-  password           String 
-  // workExperience   WorkExperience? @relation(fields: [workExperienceId], references: [id])
-  // ownerProject     OwnerProject?   @relation(fields: [ownerProjectId], references: [id])
+  password           String
 }
 
-// model WorkExperience {
-//   @@ignore
-//   id             Int      @id @default(autoincrement())
-//   companyName    String
-//   employmentType String
-//   titleWork      String   @db.VarChar(50)
-//   isCurrent      Boolean
-//   date           DateTime
-//   description    String   @db.VarChar(230)
-// }
-
-// model OwnerProject {
-
-//   id                 Int      @id @default(autoincrement())
-//   titleProject       String   @db.VarChar(50)
-//   descriptionProject String   @db.VarChar(230)
-//   skills             String[]
-//   role               String
-//   user               User?
-// }
-
-model example {
-  id Int @id @default(autoincrement())
-
-  username String?
+model Post {
+  id              Int     @id @default(autoincrement())
+  projectTitle    String
+  projectLocation String
+  isProjectRemote Boolean @default(false)
+  salaryRange     Decimal
+  isPayment       Boolean @default(false)
+  skills String[]
 }

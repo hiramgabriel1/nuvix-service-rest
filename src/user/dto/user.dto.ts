@@ -5,7 +5,6 @@ import {
     IsNotEmpty,
     IsString,
     MaxLength,
-    ValidateNested,
     IsOptional,
     IsArray,
 } from 'class-validator';
@@ -31,7 +30,7 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
-    readonly password: string
+    readonly password: string;
 
     @IsArray()
     @MaxLength(10, { each: true })
@@ -53,6 +52,14 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
+    readonly workExperience: string;
+
+    @IsString()
+    @IsNotEmpty()
+    readonly ownerProjectId: string;
+
+    @IsString()
+    @IsNotEmpty()
     readonly companyName: string;
 
     @IsString()
@@ -65,6 +72,7 @@ export class CreateUserDto {
     readonly titleWork: string;
 
     @IsBoolean()
+    @IsNotEmpty()
     readonly isCurrent: boolean;
 
     @IsDate()
