@@ -73,7 +73,7 @@ export class PostsService {
         });
 
         return {
-            message: `updated data ${(await updatedData).id}`,
+            message: `updated data ${updatedData.id}`,
             updatedPost: updatedData,
         };
     }
