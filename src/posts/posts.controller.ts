@@ -34,7 +34,7 @@ export class PostsController {
     return this.postsService.showPagePosts(page, limit);
   }
 
-  @Patch('posts/update/post/:postId/:userId')
+  @Patch('posts/update/post/:postId/user-posted/:userId')
   updatePost(
     @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) userId: number,
