@@ -31,14 +31,17 @@ model User {
   role               String
   createdAt          DateTime @default(now())
   password           String
+  posts              Post[]
 }
 
 model Post {
-  id              Int     @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
+  authorId        Int
   projectTitle    String
   projectLocation String
-  isProjectRemote Boolean @default(false)
+  isProjectRemote Boolean  @default(false)
   salaryRange     Decimal
-  isPayment       Boolean @default(false)
-  skills String[]
+  isPayment       Boolean  @default(false)
+  skills          String[]
+  author          User     @relation(fields: [authorId], references: [id])
 }

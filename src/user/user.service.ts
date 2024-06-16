@@ -9,7 +9,9 @@ export class UserService {
     constructor(private prisma: PrismaService) { }
 
     showUsers() {
-        return this.prisma.user.findMany();
+        return this.prisma.user.findMany({
+            include: { posts: true },
+        });
     }
 
     async isUserExists(user: CreateUserDto) {
@@ -22,6 +24,7 @@ export class UserService {
 
     async addUser(user: CreateUserDto): Promise<User> {
         const userExists = await this.isUserExists(user);
+
         if (userExists) {
             throw new BadRequestException('El usuario ya existe');
         }

@@ -6,22 +6,27 @@ import { CreatePostDto } from './dto/post.dto';
 export class PostsService {
     constructor(private prisma: PrismaService) { }
 
-    // validar si el post ya existe en el perfil del usuario
-    // async validatePostData(userId: number) {
-    //     return this.prisma.user.findMany({
-    //         where: {
-    //             id: userId
-    //         }
-    //     })
-    // }
-
-    async createPostUser(userId: number, postCreated: CreatePostDto) {
-        // const validatePostUser = await this.validatePostData(userId)
-
+    async createPostUser(userId: any, postCreated: CreatePostDto) {
+        return this.prisma.post.create({
+            data: {
+                ...postCreated,
+                authorId: parseInt(userId),
+            },
+        });
     }
 
     // pagination posts with query
-    async showPosts() { }
+    async showPosts() {
+        const posts = await this.prisma.post.findMany({
+            include: {
+                author: true,
+            },
+        });
+        return {
+            totalPosts: posts.length,
+            post: posts,
+        };
+    }
 
     async editPost() { }
 
