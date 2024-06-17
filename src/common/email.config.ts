@@ -1,16 +1,22 @@
-import * as nodemailer from "nodemailer";
-import { envs } from "src/config/config";
+import * as nodemailer from 'nodemailer';
+import { envs } from 'src/config/config';
 
 export const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: false,
-  auth: {
-    user: envs.email_provider,
-    pass: envs.email_password_provider,
-  },
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: envs.email_provider,
+        pass: envs.email_password_provider,
+    },
+    tls: {
+        rejectUnauthorized: false,
+    },
+    debug: true,
 });
 
-transporter.verify().then(() => {
-  console.log('ready for send emails');
+transporter.verify((error, success) => {
+    error
+        ? console.error(`error SMTP transporter ${error}`)
+        : console.log('ready to send emails!');
 });

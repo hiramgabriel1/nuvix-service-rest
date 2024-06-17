@@ -6,7 +6,8 @@ interface EnvVars {
   DATABASE_URL: string;
   EMAIL_PROVIDER: string;
   EMAIL_PASSWORD_PROVIDER: string;
-  SECRET_KEY: string
+  SECRET_KEY: string;
+  MY_EMAIL: string;
 }
 
 const envsSchema = joi
@@ -15,7 +16,8 @@ const envsSchema = joi
     DATABASE_URL: joi.string().required(),
     EMAIL_PROVIDER: joi.string().required(),
     EMAIL_PASSWORD_PROVIDER: joi.string().required(),
-    SECRET_KEY: joi.string().required()
+    SECRET_KEY: joi.string().required(),
+    MY_EMAIL: joi.string().required(),
   })
   .unknown(true);
 
@@ -30,5 +32,6 @@ export const envs = {
   databaseUrl: envVars.DATABASE_URL,
   email_provider: envVars.EMAIL_PROVIDER,
   email_password_provider: envVars.EMAIL_PASSWORD_PROVIDER,
-  secret_key: envVars.SECRET_KEY
+  secret_key: envVars.SECRET_KEY,
+  my_email: envVars.MY_EMAIL,
 };

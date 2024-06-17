@@ -8,18 +8,21 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/post.update.dto';
+import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
+  @UseGuards(AuthGuard)
   @Post('/post/:userId/create-post')
   createPost(
-    @Param('userId') userId: number,
+    @Param('userId',ParseIntPipe) userId: number,
     @Body() postCreated: CreatePostDto,
   ) {
     return this.postsService.createPostUser(userId, postCreated);
@@ -31,13 +34,11 @@ export class PostsController {
   }
 
   @Get('posts/')
-  showPagePosts(
-    @Query('page') page: number,
-    @Query('limit') limit: number
-  ) {
+  showPagePosts(@Query('page') page: number, @Query('limit') limit: number) {
     return this.postsService.showPagePosts(page, limit);
   }
 
+  @UseGuards(AuthGuard)
   @Patch('posts/update/post/:postId/user-posted/:userId')
   updatePost(
     @Param('postId', ParseIntPipe) postId: number,
@@ -47,10 +48,11 @@ export class PostsController {
     return this.postsService.editPost(postId, userId, newContentPost);
   }
 
+  @UseGuards(AuthGuard)
   @Delete('posts/delete/post/:postId/user-posted/:userId')
   removePost(
     @Param('postId', ParseIntPipe) postId: number,
-    @Param('userId', ParseIntPipe) userId: number
+    @Param('userId', ParseIntPipe) userId: number,
   ) {
     return this.postsService.removePost(postId, userId);
   }

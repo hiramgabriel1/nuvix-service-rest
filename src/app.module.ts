@@ -17,6 +17,9 @@ import { PostsService } from './posts/posts.service';
 import { ChatController } from './chat/chat.controller';
 import { ChatService } from './chat/chat.service';
 import { ReportsModule } from './reports/reports.module';
+import { EmailModule } from './email/email.module';
+import { EmailController } from './email/email.controller';
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
@@ -33,6 +36,7 @@ import { ReportsModule } from './reports/reports.module';
     ProfileModule,
     ChatModule,
     ReportsModule,
+    EmailModule,
   ],
   controllers: [
     UserController,
@@ -40,6 +44,7 @@ import { ReportsModule } from './reports/reports.module';
     CandidatesListController,
     PostsController,
     ChatController,
+    EmailController
   ],
   providers: [
     UserService,
@@ -47,6 +52,7 @@ import { ReportsModule } from './reports/reports.module';
     CandidatesListService,
     PostsService,
     ChatService,
+    EmailService
   ],
 })
 export class AppModule {}
