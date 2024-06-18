@@ -4,7 +4,6 @@ import { CandidatesListController } from './candidates-list.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { envs } from 'src/config/config';
-import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -15,6 +14,6 @@ import { UserService } from 'src/user/user.service';
     }),
   ],
   controllers: [CandidatesListController],
-  providers: [CandidatesListService, UserService, PrismaService],
+  providers: [CandidatesListService, PrismaService],
 })
 export class CandidatesListModule {}

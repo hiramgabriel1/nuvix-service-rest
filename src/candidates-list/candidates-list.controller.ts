@@ -1,11 +1,13 @@
-import { Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { CandidatesListService } from './candidates-list.service';
+import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class CandidatesListController {
   constructor(private readonly candidatesListService: CandidatesListService) {}
 
-  @Post('postulate/send-application/user/:userId/post/postId')
+  @Post('postulate/send-application/user/:userId/post/:postId')
+  @UseGuards(AuthGuard)
   sendPostulate(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number 
@@ -13,5 +15,8 @@ export class CandidatesListController {
     return this.candidatesListService.sendApplication(userId, postId)
   }  
 
-  // @Get('')
+  @Get('show')
+  showPostulates(){
+    return this.candidatesListService.showListPostulates()
+  }
 }

@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import { EmailDto } from 'src/email/dto/email.dto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { CandidatesList, Post, User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -17,14 +17,35 @@ export class UserService {
     private prisma: PrismaService,
     private emailService: EmailService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   private blackList = new Set<string>();
 
-  showUsers() {
-    return this.prisma.user.findMany({
-      include: { posts: true },
+  async showUsers(): Promise<{
+    message: string;
+    postsUser: Post;
+    candidatesToPosts: CandidatesList;
+  }> {
+    const posts = await this.prisma.user.findMany({
+      include: {
+        posts: true,
+        _count: true,
+      },
     });
+
+    const candidates = await this.prisma.candidatesList.findMany({
+      include: {
+        workPostulated: true,
+      },
+    });
+
+    return {
+      message: 'dataUsers',
+      // @ts-ignore
+      postsUser: posts,
+      // @ts-ignore
+      candidatesToPosts: candidates,
+    };
   }
 
   async isUserExists(user: CreateUserDto) {
@@ -59,7 +80,7 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async userLogin(userLogin: any): Promise <User> {
+  async userLogin(userLogin: any): Promise<User> {
     try {
       const userFindToLogin = await this.prisma.user.findUnique({
         where: {
