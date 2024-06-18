@@ -22,7 +22,7 @@ export class PostsController {
   @UseGuards(AuthGuard)
   @Post('/post/:userId/create-post')
   createPost(
-    @Param('userId',ParseIntPipe) userId: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() postCreated: CreatePostDto,
   ) {
     return this.postsService.createPostUser(userId, postCreated);
@@ -55,5 +55,22 @@ export class PostsController {
     @Param('userId', ParseIntPipe) userId: number,
   ) {
     return this.postsService.removePost(postId, userId);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('posts/candidates/post/:postId/profile/:userId')
+  findMyCandidates(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.postsService.viewCandidatesToMyPosts(postId, userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('posts/my-postulates/user/:userId')
+  findMyPostulates(
+    @Param('userId', ParseIntPipe) userId: number
+  ){
+    return this.postsService.viewMyPostulates(userId)
   }
 }

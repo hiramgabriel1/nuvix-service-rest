@@ -35,14 +35,44 @@ export class CandidatesListService {
         throw new BadRequestException('el usuario no existe');
     }
 
+    // validar que un postulante no se pueda postular mas de 1 ves
+    async validateIfPostulatedIsRepeat(userId: number) {
+        const postulates = await this.prisma.candidatesList.findFirst({
+            where: {
+                id: userId,
+            },
+        });
+    }
+
+    async validateUserPostulate(userId: number, postId: number) {
+        const post = await this.prisma.post.findUnique({
+            where: {
+                id: postId,
+            },
+        });
+
+        if (!post) throw new BadRequestException('Post not found');
+
+        if (post.authorId === userId)
+            throw new BadRequestException(
+                'no puede aplicar por que es el creador del post',
+            );
+
+        return true;
+    }
+
     async sendApplication(
         userId: number,
         postId: number,
     ): Promise<CandidatesList> {
         const userValidation = await this.validateUserApplication(userId);
         const postValidation = await this.validatePostApplication(postId);
+        const postulateUserValidation = await this.validateUserPostulate(
+            userId,
+            postId,
+        );
 
-        if (!(userValidation && postValidation))
+        if (!(userValidation && postValidation && postulateUserValidation))
             throw new BadGatewayException('error al intentar postular');
 
         const postulatePerson = await this.prisma.user.findUnique({
@@ -76,22 +106,6 @@ export class CandidatesListService {
     async declinePostulate() { }
 
     async showListPostulates() {
-        // const postulates = await this.prisma.post.findMany({
-        //     include: {
-        //         CandidatesList: true,
-        //         author: true,
-        //         _count: true
-        //     }
-        // })
-        // return postulates
-        // const filterPostulates = postulates
-        // return this.prisma.post.findMany({
-        //     include: {
-        //         CandidatesList: true,
-        //         author: true,
-        //         _count: true,
-        //     },
-        // });
         // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
     }
 

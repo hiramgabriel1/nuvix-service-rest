@@ -6,8 +6,8 @@ import { AuthGuard } from 'src/guard/auth.guard';
 export class CandidatesListController {
   constructor(private readonly candidatesListService: CandidatesListService) {}
 
+  // @UseGuards(AuthGuard)
   @Post('postulate/send-application/user/:userId/post/:postId')
-  @UseGuards(AuthGuard)
   sendPostulate(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number 

@@ -22,8 +22,7 @@ export class UserService {
   private blackList = new Set<string>();
 
   async showUsers(): Promise<{
-    message: string;
-    postsUser: Post;
+    usersAndPosts: Post;
     candidatesToPosts: CandidatesList;
   }> {
     const posts = await this.prisma.user.findMany({
@@ -40,9 +39,8 @@ export class UserService {
     });
 
     return {
-      message: 'dataUsers',
       // @ts-ignore
-      postsUser: posts,
+      usersAndPosts: posts,
       // @ts-ignore
       candidatesToPosts: candidates,
     };

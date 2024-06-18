@@ -1,4 +1,8 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import {
+    BadGatewayException,
+    BadRequestException,
+    Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Post } from '@prisma/client';
 import { UpdatePostDto } from './dto/post.update.dto';
@@ -7,6 +11,18 @@ import { CreatePostDto } from './dto/post.dto';
 @Injectable()
 export class PostsService {
     constructor(private prisma: PrismaService) { }
+
+    async validateIfUserExists(userId: number) {
+        const findUser = await this.prisma.user.findFirst({
+            where: {
+                id: userId,
+            },
+        });
+
+        if (!findUser) throw new BadRequestException('no existe el usuario');
+
+        return true;
+    }
 
     async validatePostUser(userId: number, postId: number): Promise<Post> {
         const findPost = await this.prisma.post.findFirst({
@@ -26,10 +42,14 @@ export class PostsService {
         userId: number,
         postCreated: CreatePostDto,
     ): Promise<Post> {
+        const validateUser = await this.validateIfUserExists(userId);
+
+        if (!validateUser) throw new BadRequestException('error al crear el post');
+
         return this.prisma.post.create({
             data: {
-                ...postCreated,
                 authorId: userId,
+                ...postCreated,
             },
         });
     }
@@ -94,4 +114,23 @@ export class PostsService {
             removedData: removedData,
         };
     }
+
+    async viewCandidatesToMyPosts(postId: number, userId: number): Promise<Post> {
+        const myPosts = await this.prisma.post.findFirst({
+            where: {
+                id: postId,
+                authorId: userId,
+            },
+            include: {
+                CandidatesList: true,
+                _count: true,
+                // author: true
+            },
+        });
+
+        return myPosts;
+    }
+
+    // donde el usuario ha postulado
+    async viewMyPostulates(userId: number) { }
 }
