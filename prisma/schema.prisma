@@ -35,21 +35,24 @@ model User {
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   authorId        Int
   projectTitle    String
   projectLocation String
-  isProjectRemote Boolean  @default(false)
+  isProjectRemote Boolean          @default(false)
   salaryRange     Decimal
-  isPayment       Boolean  @default(false)
+  isPayment       Boolean          @default(false)
   skills          String[]
-  author          User     @relation(fields: [authorId], references: [id])
-  createdAt       DateTime @default(now())
-  modifiedAt      DateTime @default(now())
+  author          User             @relation(fields: [authorId], references: [id])
+  createdAt       DateTime         @default(now())
+  modifiedAt      DateTime         @default(now())
+  CandidatesList  CandidatesList[]
 }
 
 model CandidatesList {
-  id Int @id @default(autoincrement())
-  username String
+  id              Int    @id @default(autoincrement())
+  username        String
   descriptionLong String
+  workId          Int
+  workPostulated  Post   @relation(fields: [workId], references: [id])
 }
