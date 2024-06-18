@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import { EmailDto } from 'src/email/dto/email.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -58,11 +59,15 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async userLogin(userLogin: any) {
+  async userLogin(userLogin: any): Promise<User> {
     try {
       const userFindToLogin = await this.prisma.user.findUnique({
         where: {
           email: userLogin.email,
+        },
+
+        include: {
+          posts: true,
         },
       });
 
@@ -74,28 +79,47 @@ export class UserService {
         userFindToLogin.password,
       );
 
-      if (!isPasswordValid) {
+      if (!isPasswordValid)
         throw new UnauthorizedException('Contraseña incorrecta');
-      }
 
-      //   retornar mas informacion aqui
-      const payload = {
-        userId: userFindToLogin.id,
-        name: userFindToLogin.username,
+      const payload: User | any = {
+        id: userFindToLogin.id,
+        username: userFindToLogin.username,
+        avatar_url: userFindToLogin.avatar_url,
         email: userFindToLogin.email,
-        roleUser: userFindToLogin.role,
+        skills: userFindToLogin.skills,
+        descriptionLong: userFindToLogin.descriptionLong,
+        about: userFindToLogin.about,
+        social: userFindToLogin.social,
+        workExperience: userFindToLogin.workExperience,
+        ownerExperience: userFindToLogin.ownerProjectId,
+        companyName: userFindToLogin.companyName,
+        employmentType: userFindToLogin.employmentType,
+        titleWorl: userFindToLogin.titleWork,
+        isCurrent: userFindToLogin.isCurrent,
+        date: userFindToLogin.date,
+        description: userFindToLogin.description,
+        titleProject: userFindToLogin.titleProject,
+        descriptionProject: userFindToLogin.descriptionProject,
+        workSkills: userFindToLogin.workSkills,
+        role: userFindToLogin.role,
+        createdAt: userFindToLogin.createdAt,
+        password: userFindToLogin.password,
+        posts: userFindToLogin.posts,
       };
 
       return {
+        // @ts-ignore
         token: await this.jwtService.signAsync(payload),
+        user: payload,
       };
     } catch (error) {
-      throw error;
+      throw new BadRequestException(`new error: ${error}`);
     }
   }
 
   blackListAdd(token: string) {
-    this.blackList.add(token);
+    return this.blackList.add(token);
   }
 
   hasBlackList(token: any): boolean {

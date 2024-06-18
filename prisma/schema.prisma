@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id                 Int      @id @default(autoincrement())
-  username           String?   @unique @db.VarChar(15)
+  username           String?  @unique @db.VarChar(15)
   avatar_url         String
   profesion          String
   email              String   @unique
@@ -44,6 +44,12 @@ model Post {
   isPayment       Boolean  @default(false)
   skills          String[]
   author          User     @relation(fields: [authorId], references: [id])
-  // createdAt       DateTime @default(now())
-  // modifiedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  modifiedAt      DateTime @default(now())
+}
+
+model CandidatesList {
+  id Int @id @default(autoincrement())
+  username String
+  descriptionLong String
 }
