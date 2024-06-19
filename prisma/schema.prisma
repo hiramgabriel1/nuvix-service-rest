@@ -23,6 +23,7 @@ model User {
   employmentType     String
   titleWork          String           @db.VarChar(80)
   isCurrent          Boolean
+  isAdminUser        Boolean          @default(false)
   date               DateTime         @default(now())
   description        String           @db.VarChar(300)
   titleProject       String           @db.VarChar(80)
@@ -33,6 +34,7 @@ model User {
   password           String
   posts              Post[]
   candidatesLists    CandidatesList[]
+  myReports          Reports[]
 }
 
 model Post {
@@ -69,9 +71,11 @@ model CompanionsProject {
 
 model Reports {
   id                Int     @id @default(autoincrement())
+  userReporteredId  Int
   titleReport       String
   typeReport        String
   descriptionReport String
   isPending         Boolean @default(true)
   isResolved        Boolean @default(false)
+  userReportered    User    @relation(fields: [userReporteredId], references: [id])
 }

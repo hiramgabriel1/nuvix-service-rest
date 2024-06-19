@@ -20,6 +20,14 @@ import { ReportsModule } from './reports/reports.module';
 import { EmailModule } from './email/email.module';
 import { EmailController } from './email/email.controller';
 import { EmailService } from './email/email.service';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MatchsModule } from './matchs/matchs.module';
+import { ReportsController } from './reports/reports.controller';
+import { ReportsService } from './reports/reports.service';
+import { NotificationsService } from './notifications/notifications.service';
+import { NotificationsController } from './notifications/notifications.controller';
+import { MatchsController } from './matchs/matchs.controller';
+import { MatchsService } from './matchs/matchs.service';
 
 @Module({
   imports: [
@@ -37,6 +45,8 @@ import { EmailService } from './email/email.service';
     ChatModule,
     ReportsModule,
     EmailModule,
+    NotificationsModule,
+    MatchsModule,
   ],
   controllers: [
     UserController,
@@ -44,7 +54,10 @@ import { EmailService } from './email/email.service';
     CandidatesListController,
     PostsController,
     ChatController,
-    EmailController
+    EmailController,
+    ReportsController,
+    NotificationsController,
+    MatchsController
   ],
   providers: [
     UserService,
@@ -52,7 +65,11 @@ import { EmailService } from './email/email.service';
     CandidatesListService,
     PostsService,
     ChatService,
-    EmailService
+    EmailService,
+    ReportsService,
+    NotificationsService,
+    MatchsService
   ],
 })
+
 export class AppModule {}

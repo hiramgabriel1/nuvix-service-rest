@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReportDto } from './dto/report.dto';
+import { Reports } from '@prisma/client';
 
 @Injectable()
 export class ReportsService {
@@ -19,18 +20,57 @@ export class ReportsService {
     }
 
     async createNewReport(userId: number, report: CreateReportDto) {
-        const validate = await this.validateIfUserExists(userId)
+        const validate = await this.validateIfUserExists(userId);
 
-        if (!validate) throw new BadRequestException('error al crear reporte')
+        if (!validate) throw new BadRequestException('el usuario no existe');
+
+        const reportCreated = await this.prisma.reports.createMany({
+            data: {
+                userReporteredId: userId,
+                ...report,
+            },
+        });
+
+        if (!reportCreated) throw new BadRequestException('error al crear');
+
+        return reportCreated;
     }
 
     async editReport(userId: number, newReportBody: CreateReportDto) { }
 
-    async statusReport() { }
+    async statusReport(reportId: number, userId: number) {
+        const user = await this.validateIfUserExists(userId);
 
-    async deleteReport() { }
+        if (user) {
+            return this.prisma.reports.findMany({
+                where: {
+                    id: reportId,
+                    userReporteredId: userId,
+                },
+                include: {
+                    userReportered: true,
+                },
+            });
+        }
+    }
 
-    async showReports() { }
+    async deleteReport(userId: number, reportId: number) {
+        // validar si el usuario es el creador o no del report
+    }
+
+    async showAllReports() {
+        return this.prisma.reports.findMany({
+            include: {
+                userReportered: true
+            }
+        });
+    }
+
+    async showMyReports() { }
 
     async filterReports() { }
+
+    // todo: admin methods
+    private async acceptReport() { }
+    private async declineReport() { }
 }

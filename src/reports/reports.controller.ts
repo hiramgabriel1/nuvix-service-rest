@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -11,7 +12,7 @@ import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/report.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 
-@Controller('reports')
+@Controller()
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) { }
 
@@ -31,5 +32,34 @@ export class ReportsController {
     @Body() newReportBody: CreateReportDto
   ) {
     return this.reportsService.editReport(userId, newReportBody);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('reports/view-status/my-reports-status/report/:reportId/user/:userId')
+  viewMyReportsStatus(
+    @Param('reportId', ParseIntPipe) reportId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ){
+    return this.reportsService.statusReport(reportId, userId)
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('reports/show-list-reports')
+  async showAllReportsList(){
+    return this.reportsService.showAllReports()
+  }
+
+  // todo: admin methods only
+  @UseGuards(AuthGuard)
+  @Post('reports/admin/accept-report/report/:reportId')
+  private approveReport(
+    @Param('reportId', ParseIntPipe) reportId: number
+  ){
+    return
+  }
+
+  @Post()
+  private declineReport(){
+
   }
 }

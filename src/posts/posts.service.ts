@@ -149,17 +149,6 @@ export class PostsService {
       throw new BadRequestException('no habeis postulado a ninguna parte');
 
     return myPostulates
-    // return myPostulates.map((postulate) => ({
-    //   id: postulate.workPostulated.id,
-    //   projectTitle: postulate.workPostulated.projectTitle,
-    //   projectLocation: postulate.workPostulated.projectLocation,
-    //   isProjectRemote: postulate.workPostulated.isProjectRemote,
-    //   salaryRange: postulate.workPostulated.salaryRange,
-    //   isPayment: postulate.workPostulated.isPayment,
-    //   skills: postulate.workPostulated.skills,
-    //   createdAt: postulate.workPostulated.createdAt,
-    //   modifiedAt: postulate.workPostulated.modifiedAt,
-    // }));
   }
 
   async viewMyPosts(userId: number): Promise<Post | CandidatesList | any> {
