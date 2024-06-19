@@ -7,11 +7,18 @@ export class ProfileService {
         private prisma: PrismaService
     ){}
 
-    async viewMyListCandidates(){
-
-    }
-
     async editMyProfile(){
         
     }
+
+    // lista de postulantes aceptados
+    async viewMyListCompanies(){
+
+    }
+
+    async deleteCandidate(){
+
+    }
+
+    
 }

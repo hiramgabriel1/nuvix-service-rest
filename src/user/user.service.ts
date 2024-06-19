@@ -125,14 +125,14 @@ export class UserService {
       include: {
         posts: {
           include: {
-            candidatesLists: true,
+            candidatesLists: true 
           },
         },
         _count: true,
       },
     });
 
-    if (!posts) return { message: 'no hay posts que mostrar' }
+    if (!posts) return { message: 'no hay posts que mostrar' };
 
     return posts;
   }

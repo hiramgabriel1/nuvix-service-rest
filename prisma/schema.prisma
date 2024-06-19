@@ -57,7 +57,7 @@ model CandidatesList {
   descriptionLong   String
   workId            Int
   isAccepted        Boolean @default(false)
-  isWaitingResponse Boolean @default(false)
+  isWaitingResponse Boolean @default(true)
   workPostulated    Post    @relation(fields: [workId], references: [id])
   user              User    @relation(fields: [userId], references: [id])
 }

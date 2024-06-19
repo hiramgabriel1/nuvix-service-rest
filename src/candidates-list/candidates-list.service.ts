@@ -8,7 +8,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CandidatesListService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  async validateIfUserPostulated(userId: number, postId: number) {
+    const isPostulated = await this.prisma.candidatesList.findFirst({
+      where: {
+        userId: userId,
+        workId: postId,
+      },
+    });
+
+    return !!!isPostulated;
+  }
 
   async validatePostApplication(postId: number): Promise<Post | boolean> {
     const postSearch = await this.prisma.post.findUnique({
@@ -123,15 +134,61 @@ export class CandidatesListService {
     return postulateToProject;
   }
 
-  async approvePostulate() {}
+  async approvePostulate(userId: number, postId: number) {
+    const validateIfUserPs = await this.validateIfUserPostulated(
+      userId,
+      postId,
+    );
 
-  async declinePostulate() {}
+    if (!validateIfUserPs)
+      throw new BadRequestException('el usuario no ha postulado en ese post');
 
-  async showListPostulates() {
-    // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
+    const approveCandidate = await this.prisma.candidatesList.updateMany({
+      where: {
+        userId: userId,
+        workId: postId,
+      },
+      data: {
+        isAccepted: true,
+      },
+    });
+
+    if (approveCandidate.count === 0)
+      throw new BadRequestException('No se pudo aprobar la postulación');
+
+    return approveCandidate;
   }
 
-  async myCompanions() {}
+  async declinePostulate(userId: number, postId: number) {
+    const validatePostulated = await this.validateIfUserPostulated(
+      userId,
+      postId,
+    );
 
-  async filterPostulates() {}
+    if (!validatePostulated)
+      throw new BadRequestException('no ha postulado el pelotudo');
+
+    const decline = await this.prisma.candidatesList.updateMany({
+      where: {
+        userId: userId,
+        workId: postId,
+      },
+      data: {
+        isAccepted: false,
+      },
+    });
+
+    if (!decline)
+      throw new BadRequestException('no se pudo declinar al postulante');
+
+    
+  }
+
+  async myCompanions() { }
+
+  async filterPostulates() { }
+
+  // async showListPostulates() {
+  //   // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
+  // }
 }
