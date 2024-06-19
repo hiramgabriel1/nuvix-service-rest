@@ -4,7 +4,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CandidatesList, Post, User } from '@prisma/client';
-import { any } from 'joi';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()

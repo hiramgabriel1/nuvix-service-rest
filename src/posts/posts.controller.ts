@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class PostsController {
-  constructor(private readonly postsService: PostsService) { }
+  constructor(private readonly postsService: PostsService) {}
 
   @UseGuards(AuthGuard)
   @Post('/post/:userId/create-post')
@@ -33,8 +33,12 @@ export class PostsController {
     return this.postsService.showPosts();
   }
 
+  @UseGuards(AuthGuard)
   @Get('posts/')
-  showPagePosts(@Query('page') page: number, @Query('limit') limit: number) {
+  showPagePosts(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
     return this.postsService.showPagePosts(page, limit);
   }
 
@@ -57,7 +61,7 @@ export class PostsController {
     return this.postsService.removePost(postId, userId);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('posts/candidates/post/:postId/profile/:userId')
   findMyCandidates(
     @Param('postId', ParseIntPipe) postId: number,
@@ -68,9 +72,7 @@ export class PostsController {
 
   @UseGuards(AuthGuard)
   @Get('posts/my-postulates/user/:userId')
-  findMyPostulates(
-    @Param('userId', ParseIntPipe) userId: number
-  ){
-    return this.postsService.viewMyPostulates(userId)
+  findMyPostulates(@Param('userId', ParseIntPipe) userId: number) {
+    return this.postsService.viewMyPostulates(userId);
   }
 }
