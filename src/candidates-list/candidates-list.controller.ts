@@ -33,7 +33,7 @@ export class CandidatesListController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('postulate/approve-postulate/user/:userId/post/:postId')
+  @Post('postulate/decline-postulate/user/:userId/post/:postId')
   declinePostulateUser(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number,

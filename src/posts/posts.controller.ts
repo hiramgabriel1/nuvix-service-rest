@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @UseGuards(AuthGuard)
   @Post('/post/:userId/create-post')

@@ -10,7 +10,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CandidatesListService {
   constructor(private prisma: PrismaService) { }
 
-  async validateIfUserPostulated(userId: number, postId: number) {
+  async validateIfUserPostulated(
+    userId: number,
+    postId: number,
+  ): Promise<boolean> {
     const isPostulated = await this.prisma.candidatesList.findFirst({
       where: {
         userId: userId,
@@ -18,7 +21,7 @@ export class CandidatesListService {
       },
     });
 
-    return !!!isPostulated;
+    return isPostulated !== null;
   }
 
   async validatePostApplication(postId: number): Promise<Post | boolean> {
@@ -63,7 +66,10 @@ export class CandidatesListService {
     return true;
   }
 
-  async validateUserPostulate(userId: number, postId: number) {
+  async validateUserPostulate(
+    userId: number,
+    postId: number,
+  ): Promise<boolean> {
     const post = await this.prisma.post.findUnique({
       where: {
         id: postId,
@@ -134,13 +140,13 @@ export class CandidatesListService {
     return postulateToProject;
   }
 
-  async approvePostulate(userId: number, postId: number) {
-    const validateIfUserPs = await this.validateIfUserPostulated(
-      userId,
-      postId,
-    );
+  async approvePostulate(
+    userId: number,
+    postId: number,
+  ): Promise<{ message: string; username: string }> {
+    const hasPostulated = await this.validateIfUserPostulated(userId, postId);
 
-    if (!validateIfUserPs)
+    if (!hasPostulated)
       throw new BadRequestException('el usuario no ha postulado en ese post');
 
     const approveCandidate = await this.prisma.candidatesList.updateMany({
@@ -156,17 +162,27 @@ export class CandidatesListService {
     if (approveCandidate.count === 0)
       throw new BadRequestException('No se pudo aprobar la postulación');
 
-    return approveCandidate;
+    const getUsernameToCandidate = await this.prisma.candidatesList.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return {
+      message: 'candidato aceptado',
+      username: getUsernameToCandidate.username,
+    };
   }
 
-  async declinePostulate(userId: number, postId: number) {
-    const validatePostulated = await this.validateIfUserPostulated(
-      userId,
-      postId,
-    );
+  async declinePostulate(
+    userId: number,
+    postId: number,
+  ): Promise<{ message: string; username: string }> {
+    const hasPostulated = await this.validateIfUserPostulated(userId, postId);
 
-    if (!validatePostulated)
-      throw new BadRequestException('no ha postulado el pelotudo');
+    if (!hasPostulated) {
+      throw new BadRequestException('No ha postulado el usuario');
+    }
 
     const decline = await this.prisma.candidatesList.updateMany({
       where: {
@@ -178,13 +194,22 @@ export class CandidatesListService {
       },
     });
 
-    if (!decline)
-      throw new BadRequestException('no se pudo declinar al postulante');
+    if (decline.count === 0)
+      throw new BadRequestException('No se pudo declinar al postulante');
 
-    
+    const getUsernameToCandidate = await this.prisma.candidatesList.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return {
+      message: 'postulante declinad@ exitosamente',
+      username: getUsernameToCandidate.username,
+    };
   }
 
-  async myCompanions() { }
+  async myCompanions(userId: number) { }
 
   async filterPostulates() { }
 
