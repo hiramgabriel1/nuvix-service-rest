@@ -14,7 +14,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) { }
+  constructor(private readonly reportsService: ReportsService) {}
 
   @UseGuards(AuthGuard)
   @Post('reports/create/new-report/user/:userId')
@@ -29,7 +29,7 @@ export class ReportsController {
   @Patch('reports/edit-report/user/:userId')
   editReportUser(
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() newReportBody: CreateReportDto
+    @Body() newReportBody: CreateReportDto,
   ) {
     return this.reportsService.editReport(userId, newReportBody);
   }
@@ -39,27 +39,29 @@ export class ReportsController {
   viewMyReportsStatus(
     @Param('reportId', ParseIntPipe) reportId: number,
     @Param('userId', ParseIntPipe) userId: number,
-  ){
-    return this.reportsService.statusReport(reportId, userId)
+  ) {
+    return this.reportsService.statusReport(reportId, userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('reports/show-list-reports')
+  async showAllReportsList() {
+    return this.reportsService.showAllReports();
   }
 
   // @UseGuards(AuthGuard)
-  @Get('reports/show-list-reports')
-  async showAllReportsList(){
-    return this.reportsService.showAllReports()
+  @Get('reports/show-my-reports/:userId')
+  async showMyReports(@Param('userId', ParseIntPipe) userId: number) {
+    return this.reportsService.showMyReports(userId);
   }
 
   // todo: admin methods only
   @UseGuards(AuthGuard)
   @Post('reports/admin/accept-report/report/:reportId')
-  private approveReport(
-    @Param('reportId', ParseIntPipe) reportId: number
-  ){
-    return
+  private approveReport(@Param('reportId', ParseIntPipe) reportId: number) {
+    return;
   }
 
   @Post()
-  private declineReport(){
-
-  }
+  private declineReport() {}
 }

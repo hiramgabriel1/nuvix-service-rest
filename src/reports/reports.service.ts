@@ -66,7 +66,20 @@ export class ReportsService {
         });
     }
 
-    async showMyReports() { }
+    async showMyReports(userId: number) {
+        const user = await this.validateIfUserExists(userId);
+
+        if (user) {
+            return this.prisma.reports.findMany({
+                where: {
+                    userReporteredId: userId,
+                },
+                include: {
+                    userReportered: true,
+                },
+            });
+        }
+    }
 
     async filterReports() { }
 
