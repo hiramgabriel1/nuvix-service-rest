@@ -8,30 +8,31 @@ datasource db {
 }
 
 model User {
-  id                 Int      @id @default(autoincrement())
-  username           String?  @unique @db.VarChar(15)
+  id                 Int              @id @default(autoincrement())
+  username           String?          @unique @db.VarChar(15)
   avatar_url         String
   profesion          String
-  email              String   @unique
+  email              String           @unique
   skills             String[]
-  descriptionLong    String   @db.VarChar(80)
-  about              String   @db.VarChar(300)
+  descriptionLong    String           @db.VarChar(80)
+  about              String           @db.VarChar(300)
   social             String[]
   workExperience     String
   ownerProjectId     String
   companyName        String
   employmentType     String
-  titleWork          String   @db.VarChar(80)
+  titleWork          String           @db.VarChar(80)
   isCurrent          Boolean
-  date               DateTime @default(now())
-  description        String   @db.VarChar(300)
-  titleProject       String   @db.VarChar(80)
-  descriptionProject String   @db.VarChar(300)
+  date               DateTime         @default(now())
+  description        String           @db.VarChar(300)
+  titleProject       String           @db.VarChar(80)
+  descriptionProject String           @db.VarChar(300)
   workSkills         String[]
   role               String
-  createdAt          DateTime @default(now())
+  createdAt          DateTime         @default(now())
   password           String
   posts              Post[]
+  candidatesLists    CandidatesList[] 
 }
 
 model Post {
@@ -46,26 +47,22 @@ model Post {
   author          User             @relation(fields: [authorId], references: [id])
   createdAt       DateTime         @default(now())
   modifiedAt      DateTime         @default(now())
-  CandidatesList  CandidatesList[]
+  candidatesLists CandidatesList[]
 }
 
 model CandidatesList {
   id                Int     @id @default(autoincrement())
+  userId            Int
   username          String
   descriptionLong   String
   workId            Int
   isAccepted        Boolean @default(false)
   isWaitingResponse Boolean @default(false)
   workPostulated    Post    @relation(fields: [workId], references: [id])
+  user              User    @relation(fields: [userId], references: [id])
 }
 
 model CompanionsProject {
   id       Int    @id @default(autoincrement())
   username String
 }
-
-// users blockeds
-
-// users friends 
-
-// users matches --> tinder mode

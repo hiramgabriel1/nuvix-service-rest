@@ -122,7 +122,7 @@ export class PostsService {
                 authorId: userId,
             },
             include: {
-                CandidatesList: true,
+                candidatesLists: true,
                 _count: true,
                 // author: true
             },

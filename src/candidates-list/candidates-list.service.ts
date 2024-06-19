@@ -1,7 +1,7 @@
 import {
-    BadGatewayException,
-    BadRequestException,
-    Injectable,
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
 } from '@nestjs/common';
 import { CandidatesList, Post, User } from '@prisma/client';
 import { any } from 'joi';
@@ -9,107 +9,130 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CandidatesListService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async validatePostApplication(postId: number): Promise<Post | boolean> {
-        const postSearch = await this.prisma.post.findUnique({
-            where: {
-                id: postId,
-            },
-        });
+  async validatePostApplication(postId: number): Promise<Post | boolean> {
+    const postSearch = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
 
-        if (!postSearch) throw new BadGatewayException('no existe el post');
+    if (!postSearch) throw new BadGatewayException('no existe el post');
 
-        return true;
+    return true;
+  }
+
+  async validateUserApplication(userId: number): Promise<User | boolean> {
+    let validateIfUserExists = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (validateIfUserExists) return true;
+
+    throw new BadRequestException('el usuario no existe');
+  }
+
+  async validateIfPostulatedIsRepeat(
+    userId: number,
+    postId: number,
+  ): Promise<any> {
+    const postulates = await this.prisma.candidatesList.findFirst({
+      where: {
+        workId: postId,
+        userId: userId,
+      },
+    });
+
+    if (postulates) {
+      throw new BadRequestException('El usuario ya ha postulado anteriormente');
     }
 
-    async validateUserApplication(userId: number): Promise<User | boolean> {
-        let validateIfUserExists = await this.prisma.user.findUnique({
-            where: {
-                id: userId,
-            },
-        });
+    return true;
+  }
 
-        if (validateIfUserExists) return true;
+  async validateUserPostulate(userId: number, postId: number) {
+    const post = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
 
-        throw new BadRequestException('el usuario no existe');
-    }
+    if (!post) throw new BadRequestException('Post not found');
 
-    // validar que un postulante no se pueda postular mas de 1 ves
-    async validateIfPostulatedIsRepeat(userId: number) {
-        const postulates = await this.prisma.candidatesList.findFirst({
-            where: {
-                id: userId,
-            },
-        });
-    }
+    if (post.authorId === userId)
+      throw new BadRequestException(
+        'no puede aplicar por que es el creador del post',
+      );
 
-    async validateUserPostulate(userId: number, postId: number) {
-        const post = await this.prisma.post.findUnique({
-            where: {
-                id: postId,
-            },
-        });
+    return true;
+  }
 
-        if (!post) throw new BadRequestException('Post not found');
+  async sendApplication(
+    userId: number,
+    postId: number,
+  ): Promise<CandidatesList> {
+    const userValidation = await this.validateUserApplication(userId);
+    const postValidation = await this.validatePostApplication(postId);
+    const postulateUserValidation = await this.validateUserPostulate(
+      userId,
+      postId,
+    );
+    const validateUserRepeat = await this.validateIfPostulatedIsRepeat(
+      userId,
+      postId,
+    );
 
-        if (post.authorId === userId)
-            throw new BadRequestException(
-                'no puede aplicar por que es el creador del post',
-            );
+    if (
+      !(
+        userValidation &&
+        postValidation &&
+        postulateUserValidation &&
+        validateUserRepeat
+      )
+    )
+      throw new BadGatewayException('error al intentar postular');
 
-        return true;
-    }
+    const postulatePerson = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
 
-    async sendApplication(
-        userId: number,
-        postId: number,
-    ): Promise<CandidatesList> {
-        const userValidation = await this.validateUserApplication(userId);
-        const postValidation = await this.validatePostApplication(postId);
-        const postulateUserValidation = await this.validateUserPostulate(
-            userId,
-            postId,
-        );
+    // @ts-ignore
+    const postulateToProject: CandidatesList = {
+      username: postulatePerson.username,
+      descriptionLong: postulatePerson.descriptionLong,
+      workId: postId,
+      userId: postulatePerson.id,
+      isAccepted: false,
+      isWaitingResponse: true,
+      // id: 1
+    };
 
-        if (!(userValidation && postValidation && postulateUserValidation))
-            throw new BadGatewayException('error al intentar postular');
+    const postPostulate = await this.prisma.candidatesList.createMany({
+      data: {
+        ...postulateToProject,
+      },
+    });
 
-        const postulatePerson = await this.prisma.user.findUnique({
-            where: {
-                id: userId,
-            },
-        });
+    if (!postPostulate)
+      throw new BadRequestException('error al hacer la postulacion');
 
-        // @ts-ignore
-        const postulateToProject: CandidatesList = {
-            username: postulatePerson.username,
-            descriptionLong: postulatePerson.descriptionLong,
-            workId: postId,
-            // id: 1
-        };
+    return postulateToProject;
+  }
 
-        const postPostulate = await this.prisma.candidatesList.createMany({
-            data: {
-                ...postulateToProject,
-            },
-        });
+  async approvePostulate() {}
 
-        if (!postPostulate)
-            throw new BadRequestException('error al hacer la postulacion');
+  async declinePostulate() {}
 
-        return postulateToProject;
-    }
+  async showListPostulates() {
+    // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
+  }
 
-    async approvePostulate() { }
+  async myCompanions() {}
 
-    async declinePostulate() { }
-
-    async showListPostulates() {
-        // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
-    }
-
-    async myCompanions() { }
-
-    async filterPostulates() { }
+  async filterPostulates() {}
 }

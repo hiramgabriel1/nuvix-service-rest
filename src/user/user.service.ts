@@ -21,29 +21,12 @@ export class UserService {
 
   private blackList = new Set<string>();
 
-  async showUsers(): Promise<{
-    usersAndPosts: Post;
-    candidatesToPosts: CandidatesList;
-  }> {
-    const posts = await this.prisma.user.findMany({
-      include: {
-        posts: true,
-        _count: true,
-      },
-    });
+  blackListAdd(token: string) {
+    return this.blackList.add(token);
+  }
 
-    const candidates = await this.prisma.candidatesList.findMany({
-      include: {
-        workPostulated: true,
-      },
-    });
-
-    return {
-      // @ts-ignore
-      usersAndPosts: posts,
-      // @ts-ignore
-      candidatesToPosts: candidates,
-    };
+  hasBlackList(token: any): boolean {
+    return this.blackList.has(token);
   }
 
   async isUserExists(user: CreateUserDto) {
@@ -137,11 +120,20 @@ export class UserService {
     }
   }
 
-  blackListAdd(token: string) {
-    return this.blackList.add(token);
-  }
+  async showUsers(): Promise<CandidatesList | any> {
+    const posts = await this.prisma.user.findMany({
+      include: {
+        posts: {
+          include: {
+            candidatesLists: true,
+          },
+        },
+        _count: true,
+      },
+    });
 
-  hasBlackList(token: any): boolean {
-    return this.blackList.has(token);
+    if (!posts) return { message: 'no hay posts que mostrar' }
+
+    return posts;
   }
 }

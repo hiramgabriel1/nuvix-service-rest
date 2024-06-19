@@ -46,11 +46,11 @@ CREATE TABLE "Post" (
 -- CreateTable
 CREATE TABLE "CandidatesList" (
     "id" SERIAL NOT NULL,
-    "username" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "descriptionLong" TEXT NOT NULL,
     "workId" INTEGER NOT NULL,
-    "isAccepted" BOOLEAN NOT NULL,
-    "isWaitingResponse" BOOLEAN NOT NULL,
+    "isAccepted" BOOLEAN NOT NULL DEFAULT false,
+    "isWaitingResponse" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "CandidatesList_pkey" PRIMARY KEY ("id")
 );
@@ -74,3 +74,6 @@ ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") 
 
 -- AddForeignKey
 ALTER TABLE "CandidatesList" ADD CONSTRAINT "CandidatesList_workId_fkey" FOREIGN KEY ("workId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CandidatesList" ADD CONSTRAINT "CandidatesList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
