@@ -180,9 +180,8 @@ export class CandidatesListService {
   ): Promise<{ message: string; username: string }> {
     const hasPostulated = await this.validateIfUserPostulated(userId, postId);
 
-    if (!hasPostulated) {
+    if (!hasPostulated)
       throw new BadRequestException('No ha postulado el usuario');
-    }
 
     const decline = await this.prisma.candidatesList.updateMany({
       where: {
@@ -209,11 +208,34 @@ export class CandidatesListService {
     };
   }
 
-  async myCompanions(userId: number) { }
+  async myCompanions(
+    userId: number,
+    workId: number,
+  ): Promise<CandidatesList | any> {
+    const validatePostulate = await this.prisma.candidatesList.findMany({
+      where: {
+        workId: workId,
+        userId: userId,
+      },
+    });
 
-  async filterPostulates() { }
+    if (!validatePostulate)
+      throw new BadRequestException(
+        'El usuario no ha postulado para este trabajo',
+      );
 
-  // async showListPostulates() {
-  //   // regresar los postulantes dependiendo el usuario y sus posts, tenemos que validar eso
-  // }
+    const companions = await this.prisma.candidatesList.findMany({
+      where: {
+        workId: workId,
+        isAccepted: true,
+      },
+      include: {
+        user: true, //informacion adicional xd
+      },
+    });
+
+    return companions;
+  }
+
+  async filterPostulates() {}
 }

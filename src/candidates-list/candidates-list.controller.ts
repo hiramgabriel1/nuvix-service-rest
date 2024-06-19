@@ -41,6 +41,14 @@ export class CandidatesListController {
     return this.candidatesListService.declinePostulate(userId, postId);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('postulate/my-companions/user/:userId/post/:workId')
+  myCompanions(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('workId', ParseIntPipe) workId: number,
+  ){
+    return this.candidatesListService.myCompanions(userId, workId)
+  }
   // @Get('show')
   // showPostulates(){
   //   return this.candidatesListService.showListPostulates()

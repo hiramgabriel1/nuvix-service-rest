@@ -32,7 +32,7 @@ model User {
   createdAt          DateTime         @default(now())
   password           String
   posts              Post[]
-  candidatesLists    CandidatesList[] 
+  candidatesLists    CandidatesList[]
 }
 
 model Post {
@@ -65,4 +65,13 @@ model CandidatesList {
 model CompanionsProject {
   id       Int    @id @default(autoincrement())
   username String
+}
+
+model Reports {
+  id                Int     @id @default(autoincrement())
+  titleReport       String
+  typeReport        String
+  descriptionReport String
+  isPending         Boolean @default(true)
+  isResolved        Boolean @default(false)
 }
