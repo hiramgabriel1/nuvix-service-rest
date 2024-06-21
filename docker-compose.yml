@@ -10,7 +10,7 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
     ports:
-      - '5438:5432'
+      - '5436:5432'
 
   redisDB:
     image: redis:latest

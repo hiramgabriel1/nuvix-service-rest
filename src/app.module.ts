@@ -28,6 +28,9 @@ import { NotificationsService } from './notifications/notifications.service';
 import { NotificationsController } from './notifications/notifications.controller';
 import { MatchsController } from './matchs/matchs.controller';
 import { MatchsService } from './matchs/matchs.service';
+import { PostsSavesModule } from './posts-saves/posts-saves.module';
+import { PostsSavesService } from './posts-saves/posts-saves.service';
+import { PostsSavesController } from './posts-saves/posts-saves.controller';
 
 @Module({
   imports: [
@@ -47,6 +50,7 @@ import { MatchsService } from './matchs/matchs.service';
     EmailModule,
     NotificationsModule,
     MatchsModule,
+    PostsSavesModule,
   ],
   controllers: [
     UserController,
@@ -57,7 +61,8 @@ import { MatchsService } from './matchs/matchs.service';
     EmailController,
     ReportsController,
     NotificationsController,
-    MatchsController
+    MatchsController,
+    PostsSavesController
   ],
   providers: [
     UserService,
@@ -68,7 +73,8 @@ import { MatchsService } from './matchs/matchs.service';
     EmailService,
     ReportsService,
     NotificationsService,
-    MatchsService
+    MatchsService,
+    PostsSavesService
   ],
 })
 
