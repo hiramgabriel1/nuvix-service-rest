@@ -28,9 +28,9 @@ import { NotificationsService } from './notifications/notifications.service';
 import { NotificationsController } from './notifications/notifications.controller';
 import { MatchsController } from './matchs/matchs.controller';
 import { MatchsService } from './matchs/matchs.service';
-import { PostsSavesModule } from './bookmarks/posts-saves.module';
-import { PostsSavesService } from './bookmarks/posts-saves.service';
-import { PostsSavesController } from './bookmarks/posts-saves.controller';
+import { PostsSavesModule } from './bookmarks/bookmarks.module';
+import { PostsSavesService } from './bookmarks/bookmarks.service';
+import { PostsSavesController } from './bookmarks/bookmarks.controller';
 
 @Module({
   imports: [
@@ -62,7 +62,7 @@ import { PostsSavesController } from './bookmarks/posts-saves.controller';
     ReportsController,
     NotificationsController,
     MatchsController,
-    PostsSavesController
+    PostsSavesController,
   ],
   providers: [
     UserService,
@@ -74,8 +74,7 @@ import { PostsSavesController } from './bookmarks/posts-saves.controller';
     ReportsService,
     NotificationsService,
     MatchsService,
-    PostsSavesService
+    PostsSavesService,
   ],
 })
-
 export class AppModule {}

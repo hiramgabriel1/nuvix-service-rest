@@ -35,6 +35,7 @@ model User {
   posts              Post[]
   candidatesLists    CandidatesList[]
   myReports          Reports[]
+  Bookmarks          Bookmarks[]
 }
 
 model Post {
@@ -65,22 +66,25 @@ model CandidatesList {
 }
 
 model CompanionsProject {
-  id       Int    @id @default(autoincrement())
-  username String
+  id          Int @id @default(autoincrement())
+  idCompanion Int
 }
 
 model Reports {
-  id                Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   userReporteredId  Int
   titleReport       String
   typeReport        String
   descriptionReport String
-  isPending         Boolean @default(true)
-  isResolved        Boolean @default(false)
-  userReportered    User    @relation(fields: [userReporteredId], references: [id])
+  isPending         Boolean  @default(true)
+  isResolved        Boolean  @default(false)
+  userReportered    User     @relation(fields: [userReporteredId], references: [id])
   createdAt         DateTime @default(now())
 }
 
-model PostSaves {
-  id    Int @id @default(autoincrement())
+model Bookmarks {
+  id            Int      @id @default(autoincrement())
+  idPost        Int
+  postSavedUser User     @relation(fields: [idPost], references: [id])
+  createdAt     DateTime @default(now())
 }

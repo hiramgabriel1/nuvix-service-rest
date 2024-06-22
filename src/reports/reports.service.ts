@@ -7,7 +7,7 @@ import { errorMessage } from 'src/common/error.message';
 @Injectable()
 export class ReportsService {
     constructor(private prisma: PrismaService) { }
-    private errorMessage;
+    private errorMessage: string;
 
     async isReportExists(postId: number) {
         const isExists = await this.prisma.reports.findFirst({
@@ -78,7 +78,7 @@ export class ReportsService {
         const user = await this.isUserCreator(reportId, userId, newReportBody);
 
         if (user) {
-            return this.prisma.reports.updateMany({
+            const reportEdited = await this.prisma.reports.updateMany({
                 where: {
                     id: reportId,
                 },
@@ -86,6 +86,10 @@ export class ReportsService {
                     ...newReportBody,
                 },
             });
+
+            if (!reportEdited) return this.errorMessage;
+
+            return reportEdited;
         }
     }
 
@@ -93,7 +97,7 @@ export class ReportsService {
         const user = await this.validateIfUserExists(userId);
 
         if (user) {
-            return this.prisma.reports.findMany({
+            const myStatusReport = await this.prisma.reports.findMany({
                 where: {
                     id: reportId,
                     userReporteredId: userId,
@@ -102,6 +106,10 @@ export class ReportsService {
                     userReportered: true,
                 },
             });
+
+            if (!myStatusReport) return this.errorMessage;
+
+            return myStatusReport;
         }
     }
 
@@ -125,11 +133,15 @@ export class ReportsService {
     }
 
     async showAllReports() {
-        return this.prisma.reports.findMany({
+        const reports = await this.prisma.reports.findMany({
             include: {
                 userReportered: true,
             },
         });
+
+        if (!reports) return this.errorMessage;
+
+        return reports;
     }
 
     async showMyReports(userId: number) {
@@ -169,6 +181,7 @@ export class ReportsService {
             return updated;
         }
     }
+
     async declineReport(reportId: number) {
         const reportExists = await this.isReportExists(reportId);
 

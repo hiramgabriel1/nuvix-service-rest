@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { envs } from 'src/config/config';
-import { PostsSavesController } from './posts-saves.controller';
-import { PostsSavesService } from './posts-saves.service';
+import { PostsSavesController } from './bookmarks.controller';
+import { PostsSavesService } from './bookmarks.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
@@ -18,5 +18,3 @@ import { PrismaService } from 'src/prisma/prisma.service';
 })
 
 export class PostsSavesModule {}
-
-// banana bluebarry
