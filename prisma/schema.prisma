@@ -78,6 +78,7 @@ model Reports {
   isPending         Boolean @default(true)
   isResolved        Boolean @default(false)
   userReportered    User    @relation(fields: [userReporteredId], references: [id])
+  createdAt         DateTime @default(now())
 }
 
 model PostSaves {

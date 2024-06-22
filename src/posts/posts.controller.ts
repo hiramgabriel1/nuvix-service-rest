@@ -15,12 +15,12 @@ import { CreatePostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/post.update.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 
-@Controller()
+@Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
   @UseGuards(AuthGuard)
-  @Post('/post/:userId/create-post')
+  @Post('/:userId/create-post')
   createPost(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() postCreated: CreatePostDto,
@@ -28,7 +28,7 @@ export class PostsController {
     return this.postsService.createPostUser(userId, postCreated);
   }
 
-  @Get('posts/all-posts')
+  @Get('/all-posts')
   show() {
     return this.postsService.showPosts();
   }
@@ -43,7 +43,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch('posts/update/post/:postId/user-posted/:userId')
+  @Patch('/update/post/:postId/user-posted/:userId')
   updatePost(
     @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) userId: number,
@@ -53,7 +53,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete('posts/delete/post/:postId/user-posted/:userId')
+  @Delete('/delete/post/:postId/user-posted/:userId')
   removePost(
     @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) userId: number,
@@ -62,7 +62,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('posts/candidates/post/:postId/profile/:userId')
+  @Get('/candidates/post/:postId/profile/:userId')
   findMyCandidates(
     @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) userId: number,
@@ -71,7 +71,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('posts/my-postulates/user/:userId')
+  @Get('/my-postulates/user/:userId')
   findMyPostulates(@Param('userId', ParseIntPipe) userId: number) {
     return this.postsService.viewMyPostulates(userId);
   }

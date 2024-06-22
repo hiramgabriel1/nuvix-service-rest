@@ -2,10 +2,44 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReportDto } from './dto/report.dto';
 import { Reports } from '@prisma/client';
+import { errorMessage } from 'src/common/error.message';
 
 @Injectable()
 export class ReportsService {
     constructor(private prisma: PrismaService) { }
+    private errorMessage;
+
+    async isReportExists(postId: number) {
+        const isExists = await this.prisma.reports.findFirst({
+            where: {
+                id: postId,
+            },
+        });
+
+        if (!isExists) throw new BadRequestException('el report no existe');
+
+        return true;
+    }
+
+    async isUserCreator(userId: number, reportId: number, _newReportBody) {
+        const creatorValidate = await this.prisma.user.findFirst({
+            include: {
+                myReports: {
+                    where: {
+                        userReporteredId: userId,
+                        id: reportId,
+                    },
+                },
+            },
+        });
+
+        if (!creatorValidate)
+            throw new BadRequestException(
+                `el usuario ${creatorValidate.username} no creo este post`,
+            );
+
+        return true;
+    }
 
     async validateIfUserExists(userId: number): Promise<boolean> {
         const user = await this.prisma.user.findFirst({
@@ -36,7 +70,24 @@ export class ReportsService {
         return reportCreated;
     }
 
-    async editReport(userId: number, newReportBody: CreateReportDto) { }
+    async editReport(
+        reportId: number,
+        userId: number,
+        newReportBody: CreateReportDto,
+    ) {
+        const user = await this.isUserCreator(reportId, userId, newReportBody);
+
+        if (user) {
+            return this.prisma.reports.updateMany({
+                where: {
+                    id: reportId,
+                },
+                data: {
+                    ...newReportBody,
+                },
+            });
+        }
+    }
 
     async statusReport(reportId: number, userId: number) {
         const user = await this.validateIfUserExists(userId);
@@ -54,15 +105,30 @@ export class ReportsService {
         }
     }
 
-    async deleteReport(userId: number, reportId: number) {
-        // validar si el usuario es el creador o no del report
+    async deleteReport(
+        userId: number,
+        reportId: number,
+    ): Promise<Reports | string> {
+        const reportFinder = this.isUserCreator(userId, reportId, null);
+
+        if (reportFinder) {
+            const removeReport = await this.prisma.reports.delete({
+                where: {
+                    id: reportId,
+                },
+            });
+
+            if (!removeReport) return this.errorMessage;
+
+            return removeReport;
+        }
     }
 
     async showAllReports() {
         return this.prisma.reports.findMany({
             include: {
-                userReportered: true
-            }
+                userReportered: true,
+            },
         });
     }
 
@@ -70,7 +136,7 @@ export class ReportsService {
         const user = await this.validateIfUserExists(userId);
 
         if (user) {
-            return this.prisma.reports.findMany({
+            const myReports = await this.prisma.reports.findMany({
                 where: {
                     userReporteredId: userId,
                 },
@@ -78,12 +144,44 @@ export class ReportsService {
                     userReportered: true,
                 },
             });
+
+            if (!myReports) return this.errorMessage;
+
+            return myReports;
         }
     }
 
-    async filterReports() { }
+    async acceptReport(reportId: number): Promise<Reports | string> {
+        const reportExists = await this.isReportExists(reportId);
 
-    // todo: admin methods
-    private async acceptReport() { }
-    private async declineReport() { }
+        if (reportExists) {
+            const updated = await this.prisma.reports.update({
+                where: {
+                    id: reportId,
+                },
+                data: {
+                    isResolved: true,
+                },
+            });
+
+            if (!updated) return this.errorMessage;
+
+            return updated;
+        }
+    }
+    async declineReport(reportId: number) {
+        const reportExists = await this.isReportExists(reportId);
+
+        if (reportExists) {
+            const declinedReport = await this.prisma.reports.delete({
+                where: {
+                    id: reportId,
+                },
+            });
+
+            if (!declinedReport) return this.errorMessage;
+
+            return declinedReport;
+        }
+    }
 }

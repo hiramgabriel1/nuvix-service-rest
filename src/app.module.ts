@@ -28,9 +28,9 @@ import { NotificationsService } from './notifications/notifications.service';
 import { NotificationsController } from './notifications/notifications.controller';
 import { MatchsController } from './matchs/matchs.controller';
 import { MatchsService } from './matchs/matchs.service';
-import { PostsSavesModule } from './posts-saves/posts-saves.module';
-import { PostsSavesService } from './posts-saves/posts-saves.service';
-import { PostsSavesController } from './posts-saves/posts-saves.controller';
+import { PostsSavesModule } from './bookmarks/posts-saves.module';
+import { PostsSavesService } from './bookmarks/posts-saves.service';
+import { PostsSavesController } from './bookmarks/posts-saves.controller';
 
 @Module({
   imports: [

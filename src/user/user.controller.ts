@@ -12,22 +12,22 @@ import { CreateUserDto } from './dto/user.dto';
 import { LoginDto } from './dto/user.login.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post('user/create-user')
+  @Post('/create-user')
   createUser(@Body() user: CreateUserDto) {
     return this.userService.addUser(user);
   }
 
-  @Post('user/auth-login')
+  @Post('/auth-login')
   authUser(@Body() userLogin: LoginDto) {
     return this.userService.userLogin(userLogin);
   }
 
   @UseGuards(AuthGuard)
-  @Post('user/auth-logout')
+  @Post('/auth-logout')
   logout(@Req() request: Request) {
     const authHeader = request.headers['authorization'];
     if (authHeader) {
@@ -37,7 +37,7 @@ export class UserController {
     return { message: 'Logged out successfully' };
   }
 
-  @Get('users')
+  @Get('/show-users')
   show() {
     return this.userService.showUsers();
   }

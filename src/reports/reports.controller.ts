@@ -12,12 +12,12 @@ import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/report.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 
-@Controller()
+@Controller('reports')
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(private readonly reportsService: ReportsService) { }
 
   @UseGuards(AuthGuard)
-  @Post('reports/create/new-report/user/:userId')
+  @Post('/create/new-report/user/:userId')
   createReport(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() report: CreateReportDto,
@@ -26,16 +26,17 @@ export class ReportsController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch('reports/edit-report/user/:userId')
+  @Patch('/edit-report/report/:reportId/user/:userId')
   editReportUser(
+    @Param('reportId', ParseIntPipe) reportId: number,
     @Param('userId', ParseIntPipe) userId: number,
     @Body() newReportBody: CreateReportDto,
   ) {
-    return this.reportsService.editReport(userId, newReportBody);
+    return this.reportsService.editReport(reportId, userId, newReportBody);
   }
 
   @UseGuards(AuthGuard)
-  @Get('reports/view-status/my-reports-status/report/:reportId/user/:userId')
+  @Get('/view-status/my-reports-status/report/:reportId/user/:userId')
   viewMyReportsStatus(
     @Param('reportId', ParseIntPipe) reportId: number,
     @Param('userId', ParseIntPipe) userId: number,
@@ -44,24 +45,27 @@ export class ReportsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('reports/show-list-reports')
+  @Get('/show-list-reports')
   async showAllReportsList() {
     return this.reportsService.showAllReports();
   }
 
-  // @UseGuards(AuthGuard)
-  @Get('reports/show-my-reports/:userId')
+  @UseGuards(AuthGuard)
+  @Get('/show-my-reports/:userId')
   async showMyReports(@Param('userId', ParseIntPipe) userId: number) {
     return this.reportsService.showMyReports(userId);
   }
 
   // todo: admin methods only
   @UseGuards(AuthGuard)
-  @Post('reports/admin/accept-report/report/:reportId')
-  private approveReport(@Param('reportId', ParseIntPipe) reportId: number) {
-    return;
+  @Post('/admin/accept-report/report/:reportId')
+  approveReport(@Param('reportId', ParseIntPipe) reportId: number) {
+    return this.reportsService.acceptReport(reportId);
   }
 
-  @Post()
-  private declineReport() {}
+  // @UseGuards()
+  @Post('/admin/decline-report/report/:reportId')
+  declineReport(@Param('reportId', ParseIntPipe) reportId: number) {
+    return this.reportsService.declineReport(reportId)
+  }
 }
