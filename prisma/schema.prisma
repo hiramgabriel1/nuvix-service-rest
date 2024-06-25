@@ -35,7 +35,9 @@ model User {
   workPosts          WorkPost[]
   candidatesLists    CandidatesList[]
   myReports          Reports[]
+  Posts              Posts[]
   Bookmarks          Bookmarks[]
+  comments           CommentsPost[]
 }
 
 model WorkPost {
@@ -51,6 +53,24 @@ model WorkPost {
   createdAt       DateTime         @default(now())
   modifiedAt      DateTime         @default(now())
   candidatesLists CandidatesList[]
+}
+
+model Posts {
+  id                Int    @id @default(autoincrement())
+  titlePost         String
+  descriptionPost   String
+  photoUrlWallpaper String
+  imageUrlReference String
+  categoryPost      String
+  creatorPostId     Int
+  creatorPost       User   @relation(fields: [creatorPostId], references: [id])
+}
+
+model CommentsPost {
+  id           Int    @id @default(autoincrement())
+  comment      String
+  userCreatorId  Int
+  userCreator User   @relation(fields: [userCreatorId], references: [id])
 }
 
 model CandidatesList {
