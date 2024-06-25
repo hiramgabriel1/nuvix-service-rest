@@ -24,6 +24,7 @@ model User {
   titleWork          String           @db.VarChar(80)
   isCurrent          Boolean
   isAdminUser        Boolean          @default(false)
+  isUserPremium      Boolean          @default(false)
   date               DateTime         @default(now())
   description        String           @db.VarChar(300)
   titleProject       String           @db.VarChar(80)
