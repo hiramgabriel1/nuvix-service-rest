@@ -32,13 +32,13 @@ model User {
   role               String
   createdAt          DateTime         @default(now())
   password           String
-  posts              Post[]
+  workPosts          WorkPost[]
   candidatesLists    CandidatesList[]
   myReports          Reports[]
   Bookmarks          Bookmarks[]
 }
 
-model Post {
+model WorkPost {
   id              Int              @id @default(autoincrement())
   authorId        Int
   projectTitle    String
@@ -54,15 +54,15 @@ model Post {
 }
 
 model CandidatesList {
-  id                Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   userId            Int
   username          String
   descriptionLong   String
   workId            Int
-  isAccepted        Boolean @default(false)
-  isWaitingResponse Boolean @default(true)
-  workPostulated    Post    @relation(fields: [workId], references: [id])
-  user              User    @relation(fields: [userId], references: [id])
+  isAccepted        Boolean  @default(false)
+  isWaitingResponse Boolean  @default(true)
+  workPostulated    WorkPost @relation(fields: [workId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
 }
 
 model CompanionsProject {

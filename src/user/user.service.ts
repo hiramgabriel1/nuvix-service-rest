@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import { EmailDto } from 'src/email/dto/email.dto';
 import { JwtService } from '@nestjs/jwt';
-import { CandidatesList, Post, User } from '@prisma/client';
+import { CandidatesList, WorkPost, User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -69,7 +69,7 @@ export class UserService {
         },
 
         include: {
-          posts: true,
+          workPosts: true,
         },
       });
 
@@ -107,7 +107,7 @@ export class UserService {
         role: userFindToLogin.role,
         createdAt: userFindToLogin.createdAt,
         password: userFindToLogin.password,
-        posts: userFindToLogin.posts,
+        workPosts: userFindToLogin.workPosts,
       };
 
       return {
@@ -123,7 +123,7 @@ export class UserService {
   async showUsers(): Promise<CandidatesList | any> {
     const posts = await this.prisma.user.findMany({
       include: {
-        posts: {
+        workPosts: {
           include: {
             candidatesLists: true 
           },

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Bookmarks, Post } from '@prisma/client';
+import { Bookmarks, WorkPost } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { errorMessage } from 'src/common/error.message';
 
@@ -9,7 +9,7 @@ export class PostsSavesService {
     private errorMessage = errorMessage;
 
     async validatePost(postId: number, userId: number) {
-        const searchPost = await this.prisma.post.findFirst({
+        const searchPost = await this.prisma.workPost.findFirst({
             where: {
                 id: postId,
             },

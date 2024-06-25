@@ -3,7 +3,7 @@ import {
   BadRequestException,
   Injectable,
 } from '@nestjs/common';
-import { CandidatesList, Post, User } from '@prisma/client';
+import { CandidatesList, User, WorkPost } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -24,8 +24,8 @@ export class CandidatesListService {
     return isPostulated !== null;
   }
 
-  async validatePostApplication(postId: number): Promise<Post | boolean> {
-    const postSearch = await this.prisma.post.findUnique({
+  async validatePostApplication(postId: number): Promise<WorkPost | boolean> {
+    const postSearch = await this.prisma.workPost.findUnique({
       where: {
         id: postId,
       },
@@ -70,7 +70,7 @@ export class CandidatesListService {
     userId: number,
     postId: number,
   ): Promise<boolean> {
-    const post = await this.prisma.post.findUnique({
+    const post = await this.prisma.workPost.findUnique({
       where: {
         id: postId,
       },
