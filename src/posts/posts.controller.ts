@@ -7,72 +7,48 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/post.dto';
-import { UpdatePostDto } from './dto/post.update.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
+import { CreatePostDto } from './dto/create.dto';
+import { UpdatePost } from './dto/update.dto';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) { }
+  constructor(private readonly postsService: PostsService) {}
 
-  @UseGuards(AuthGuard)
-  @Post('/:userId/create-post')
+  // @UseGuards(AuthGuard)
+  @Post('/create-post/:userId')
   createPost(
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() postCreated: CreatePostDto,
+    @Body() postData: CreatePostDto,
   ) {
-    return this.postsService.createPostUser(userId, postCreated);
+    return this.postsService.userCreatePost(userId, postData);
   }
 
-  @Get('/all-posts')
-  show() {
+  // @UseGuards(AuthGuard)
+  @Get('/show-posts')
+  showAllPosts() {
     return this.postsService.showPosts();
   }
 
-  @UseGuards(AuthGuard)
-  @Get('posts/')
-  showPagePosts(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
+  // @UseGuards(AuthGuard)
+  @Delete('/remove-my-post/user/:userId/post/:postId')
+  removeMyPost(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('postId', ParseIntPipe) postId: number,
   ) {
-    return this.postsService.showPagePosts(page, limit);
+    return this.postsService.deleteMyPost(userId, postId);
   }
 
   @UseGuards(AuthGuard)
-  @Patch('/update/post/:postId/user-posted/:userId')
+  @Patch('/update-post/user/:userId/post-updated/:postId')
   updatePost(
-    @Param('postId', ParseIntPipe) postId: number,
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() newContentPost: UpdatePostDto,
-  ) {
-    return this.postsService.editPost(postId, userId, newContentPost);
-  }
-
-  @UseGuards(AuthGuard)
-  @Delete('/delete/post/:postId/user-posted/:userId')
-  removePost(
     @Param('postId', ParseIntPipe) postId: number,
-    @Param('userId', ParseIntPipe) userId: number,
+    @Body() newPost: UpdatePost,
   ) {
-    return this.postsService.removePost(postId, userId);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('/candidates/post/:postId/profile/:userId')
-  findMyCandidates(
-    @Param('postId', ParseIntPipe) postId: number,
-    @Param('userId', ParseIntPipe) userId: number,
-  ) {
-    return this.postsService.viewCandidatesToMyPosts(postId, userId);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('/my-postulates/user/:userId')
-  findMyPostulates(@Param('userId', ParseIntPipe) userId: number) {
-    return this.postsService.viewMyPostulates(userId);
+    return this.postsService.editMyPost(userId, postId, newPost)
   }
 }

@@ -1,173 +1,105 @@
 import {
-  BadGatewayException,
-  BadRequestException,
-  Injectable,
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CandidatesList, WorkPost } from '@prisma/client';
-import { UpdatePostDto } from './dto/post.update.dto';
-import { CreatePostDto } from './dto/post.dto';
+import { CreatePostDto } from './dto/create.dto';
+import { UpdatePost } from './dto/update.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService) { }
 
-  async validateIfUserExists(userId: number) {
-    const findUser = await this.prisma.user.findFirst({
-      where: {
-        id: userId,
-      },
-    });
+    async validateIfUserExists(userId: number): Promise<Boolean> {
+        try {
+            const findUser = await this.prisma.user.findFirst({
+                where: {
+                    id: userId,
+                },
+            });
 
-    if (!findUser) throw new BadRequestException('no existe el usuario');
+            if (!findUser)
+                throw new BadRequestException('el usuario buscado no existe');
 
-    return true;
-  }
+            return true;
+        } catch (error) {
+            console.log(error);
+            throw new BadRequestException(error.message);
+        }
+    }
 
-  async validatePostUser(userId: number, postId: number): Promise<WorkPost> {
-    const findPost = await this.prisma.workPost.findFirst({
-      where: {
-        id: postId,
-        authorId: userId,
-      },
-    });
+    async validatePost(postId: number): Promise<Boolean> {
+        const findPost = await this.prisma.posts.findFirst({
+            where: {
+                id: postId,
+            },
+        });
 
-    if (!findPost)
-      throw new BadGatewayException('No existe el post para el usuario');
+        if (!findPost) throw new NotFoundException('no existe el post');
 
-    return findPost;
-  }
+        return true;
+    }
 
-  async createPostUser(
-    userId: number,
-    postCreated: CreatePostDto,
-  ): Promise<WorkPost> {
-    const validateUser = await this.validateIfUserExists(userId);
+    async userCreatePost(userId: number, postData: CreatePostDto) {
+        const userFinded = await this.validateIfUserExists(userId);
 
-    if (!validateUser) throw new BadRequestException('error al crear el post');
+        if (userFinded) {
+            const dataGetted = { ...postData, creatorPostId: userId };
+            const createDataPost = await this.prisma.posts.create({
+                data: dataGetted,
+            });
 
-    return this.prisma.workPost.create({
-      data: {
-        authorId: userId,
-        ...postCreated,
-      },
-    });
-  }
+            if (createDataPost) return createDataPost;
 
-  async showPosts() {
-    const posts = await this.prisma.workPost.findMany({
-      include: {
-        author: true,
-      },
-    });
-    return {
-      totalPosts: posts.length,
-      post: posts,
-    };
-  }
+            return 'error al crear tu post';
+        }
+    }
 
-  showPagePosts(page: number, limit: number) {
-    const skip = (page - 1) * limit;
+    async showPosts() {
+        const allPosts = await this.prisma.posts.findMany();
 
-    return this.prisma.workPost.findMany({
-      take: limit,
-      skip: skip,
-      include: {
-        author: true,
-      },
-      // orderBy: { createdAt: 'desc' }
-    });
-  }
+        if (!allPosts) return { message: 'no se han encontrado posts' };
 
-  async editPost(
-    postId: number,
-    userId: number,
-    newContentPost: UpdatePostDto,
-  ): Promise<{ message: string; updatedPost: WorkPost }> {
-    await this.validatePostUser(userId, postId);
-    const updatedData = await this.prisma.workPost.update({
-      where: {
-        id: postId,
-      },
-      data: newContentPost,
-    });
+        return allPosts;
+    }
 
-    return {
-      message: `updated data ${updatedData.id}`,
-      updatedPost: updatedData,
-    };
-  }
+    async deleteMyPost(userId: number, postId: number) {
+        const validateUser = await this.validateIfUserExists(userId);
+        const validatePost = await this.validatePost(postId);
 
-  async removePost(
-    postId: number,
-    userId: number,
-  ): Promise<{ message: string; removedData: WorkPost }> {
-    await this.validatePostUser(userId, postId);
-    const removedData = await this.prisma.workPost.delete({
-      where: {
-        id: postId,
-      },
-    });
+        if (validateUser && validatePost) {
+            const removeMyPost = await this.prisma.posts.delete({
+                where: {
+                    creatorPostId: userId,
+                    id: postId,
+                },
+            });
 
-    return {
-      message: 'eliminado exitosaente',
-      removedData: removedData,
-    };
-  }
+            if (removeMyPost) return removeMyPost;
 
-  async viewCandidatesToMyPosts(
-    postId: number,
-    userId: number,
-  ): Promise<WorkPost> {
-    const myPosts = await this.prisma.workPost.findFirst({
-      where: {
-        id: postId,
-        authorId: userId,
-      },
-      include: {
-        candidatesLists: true,
-        _count: true,
-        // author: true
-      },
-    });
+            throw new UnauthorizedException('el usuario no creo el post');
+        }
+    }
 
-    return myPosts;
-  }
+    async editMyPost(userId: number, postId: number, newDataPost: UpdatePost) {
+        const validatePost = await this.validatePost(postId);
+        const validateUser = await this.validateIfUserExists(userId);
 
-  async viewMyPostulates(userId: number) {
-    const validateUser = await this.validateIfUserExists(userId);
+        if (!(validatePost && validateUser))
+            return 'error al intentar eliminar post';
 
-    if (!validateUser) throw new BadRequestException('el usuario no existe');
+        const newPostData = { ...newDataPost, creatorPostId: userId };
+        const updatePost = await this.prisma.posts.update({
+            where: {
+                id: postId,
+            },
+            data: newPostData,
+        });
 
-    const myPostulates = await this.prisma.candidatesList.findMany({
-      where: {
-        id: userId,
-      },
-      include: {
-        workPostulated: true,
-      },
-    });
+        if (!updatePost) throw new BadRequestException('error al actualizar');
 
-    if (!myPostulates)
-      throw new BadRequestException('no habeis postulado a ninguna parte');
-
-    return myPostulates;
-  }
-
-  async viewMyPosts(userId: number): Promise<WorkPost | CandidatesList | any> {
-    const validateUser = await this.validateIfUserExists(userId);
-
-    if (!validateUser)
-      throw new BadRequestException('error al buscar tus posts');
-
-    return this.prisma.workPost.findMany({
-      where: {
-        id: userId,
-      },
-      include: {
-        candidatesLists: true,
-        _count: true,
-      },
-    });
-  }
+        return updatePost;
+    }
 }

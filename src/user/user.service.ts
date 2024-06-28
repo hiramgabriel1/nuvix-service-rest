@@ -17,7 +17,7 @@ export class UserService {
     private prisma: PrismaService,
     private emailService: EmailService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   private blackList = new Set<string>();
 
@@ -61,7 +61,7 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async userLogin(userLogin: any): Promise<User> {
+  async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
     try {
       const userFindToLogin = await this.prisma.user.findUnique({
         where: {
@@ -113,21 +113,20 @@ export class UserService {
       };
 
       return {
-        // @ts-ignore
         token: await this.jwtService.signAsync(payload),
         user: payload,
       };
     } catch (error) {
-      throw new BadRequestException(`new error: ${error}`);
+      throw new BadRequestException(`new error: ${error.message}`);
     }
   }
 
-  async showUsers(): Promise<CandidatesList | any> {
+  async showUsers(): Promise<{ message: string; posts: CandidatesList } | any> {
     const posts = await this.prisma.user.findMany({
       include: {
         workPosts: {
           include: {
-            candidatesLists: true 
+            candidatesLists: true,
           },
         },
         _count: true,
