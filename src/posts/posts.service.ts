@@ -7,6 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create.dto';
 import { UpdatePost } from './dto/update.dto';
+import { Posts } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
@@ -101,5 +102,21 @@ export class PostsService {
         if (!updatePost) throw new BadRequestException('error al actualizar');
 
         return updatePost;
+    }
+
+    async showOnlyMyPosts(userId: number) {
+        const user = await this.validateIfUserExists(userId);
+
+        if (user) {
+            const findMyPosts = await this.prisma.posts.findMany({
+                where: {
+                    creatorPostId: userId,
+                },
+            });
+
+            if (!findMyPosts) throw new UnauthorizedException('el usuario no creo');
+
+            return findMyPosts
+        }
     }
 }

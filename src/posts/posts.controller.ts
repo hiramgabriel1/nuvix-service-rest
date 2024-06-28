@@ -42,13 +42,19 @@ export class PostsController {
     return this.postsService.deleteMyPost(userId, postId);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Patch('/update-post/user/:userId/post-updated/:postId')
   updatePost(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number,
     @Body() newPost: UpdatePost,
   ) {
-    return this.postsService.editMyPost(userId, postId, newPost)
+    return this.postsService.editMyPost(userId, postId, newPost);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('/show/my-posts/user/:userId')
+  myPosts(@Param('userId', ParseIntPipe) userId: number) {
+    return this.postsService.showOnlyMyPosts(userId);
   }
 }
