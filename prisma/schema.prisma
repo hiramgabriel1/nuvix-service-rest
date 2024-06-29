@@ -8,37 +8,39 @@ datasource db {
 }
 
 model User {
-  id                 Int              @id @default(autoincrement())
-  username           String?          @unique @db.VarChar(15)
-  avatar_url         String
-  profesion          String
-  email              String           @unique
-  skills             String[]
-  descriptionLong    String           @db.VarChar(80)
-  about              String           @db.VarChar(300)
-  social             String[]
-  workExperience     String
-  ownerProjectId     String
-  companyName        String
-  employmentType     String
-  titleWork          String           @db.VarChar(80)
-  isCurrent          Boolean
-  isAdminUser        Boolean          @default(false)
-  isUserPremium      Boolean          @default(false)
-  date               DateTime         @default(now())
-  description        String           @db.VarChar(300)
-  titleProject       String           @db.VarChar(80)
-  descriptionProject String           @db.VarChar(300)
-  workSkills         String[]
-  role               String
-  createdAt          DateTime         @default(now())
-  password           String
-  workPosts          WorkPost[]
-  candidatesLists    CandidatesList[]
-  myReports          Reports[]
-  Posts              Posts[]
-  Bookmarks          Bookmarks[]
-  comments           CommentsPost[]
+  id                  Int              @id @default(autoincrement())
+  username            String?          @unique @db.VarChar(15)
+  avatar_url          String
+  profesion           String
+  email               String           @unique
+  skills              String[]
+  descriptionLong     String           @db.VarChar(80)
+  about               String           @db.VarChar(300)
+  social              String[]
+  workExperience      String
+  ownerProjectId      String
+  companyName         String
+  employmentType      String
+  titleWork           String           @db.VarChar(80)
+  isCurrent           Boolean
+  isAdminUser         Boolean          @default(false)
+  isUserPremium       Boolean          @default(false)
+  date                DateTime         @default(now())
+  description         String           @db.VarChar(300)
+  titleProject        String           @db.VarChar(80)
+  descriptionProject  String           @db.VarChar(300)
+  workSkills          String[]
+  role                String
+  createdAt           DateTime         @default(now())
+  password            String
+  // postsLikeds        String  
+  workPosts           WorkPost[]
+  candidatesLists     CandidatesList[]
+  myReports           Reports[]
+  Posts               Posts[]
+  Bookmarks           Bookmarks[]
+  comments            CommentsPost[]
+  CommentsPostsNormal Comments[]
 }
 
 model WorkPost {
@@ -57,21 +59,34 @@ model WorkPost {
 }
 
 model Posts {
-  id                Int    @id @default(autoincrement())
+  id                Int        @id @default(autoincrement())
   titlePost         String
   descriptionPost   String
   photoUrlWallpaper String
   imageUrlReference String
+  likesCount        Int        @default(0)
   categoryPost      String
   creatorPostId     Int
-  creatorPost       User   @relation(fields: [creatorPostId], references: [id])
+  creatorPost       User       @relation(fields: [creatorPostId], references: [id])
+  createdAt         DateTime   @default(now())
+  Comments          Comments[]
+}
+
+model Comments {
+  id            Int    @id @default(autoincrement())
+  postId        Int
+  post          Posts  @relation(fields: [postId], references: [id])
+  creatorId     Int
+  creator       User   @relation(fields: [creatorId], references: [id])
+  content       String
+  createdAt     DateTime @default(now())
 }
 
 model CommentsPost {
-  id           Int    @id @default(autoincrement())
-  comment      String
-  userCreatorId  Int
-  userCreator User   @relation(fields: [userCreatorId], references: [id])
+  id            Int    @id @default(autoincrement())
+  comment       String
+  userCreatorId Int
+  userCreator   User   @relation(fields: [userCreatorId], references: [id])
 }
 
 model CandidatesList {

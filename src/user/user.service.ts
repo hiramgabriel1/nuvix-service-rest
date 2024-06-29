@@ -122,19 +122,24 @@ export class UserService {
   }
 
   async showUsers(): Promise<{ message: string; posts: CandidatesList } | any> {
-    const posts = await this.prisma.user.findMany({
+    const workPosts = await this.prisma.user.findMany({
       include: {
         workPosts: {
           include: {
             candidatesLists: true,
           },
         },
-        _count: true,
+        Posts: true,
+        Bookmarks: true,
+        candidatesLists: true,
+        comments: true,
+        CommentsPostsNormal: true,
+        myReports: true,
       },
     });
 
-    if (!posts) return { message: 'no hay posts que mostrar' };
+    if (!workPosts) return { message: 'no hay posts que mostrar' };
 
-    return posts;
+    return workPosts;
   }
 }

@@ -57,4 +57,10 @@ export class PostsController {
   myPosts(@Param('userId', ParseIntPipe) userId: number) {
     return this.postsService.showOnlyMyPosts(userId);
   }
+
+  // @UseGuards(AuthGuard)
+  @Get('/popular-posts')
+  popularPosts(){
+    return this.postsService.showPopularPosts()
+  }
 }

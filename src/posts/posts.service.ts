@@ -26,13 +26,13 @@ export class PostsService {
 
             return true;
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             throw new BadRequestException(error.message);
         }
     }
 
     async validatePost(postId: number): Promise<Boolean> {
-        const findPost = await this.prisma.posts.findFirst({
+        const findPost = await this.prisma.posts.findUnique({
             where: {
                 id: postId,
             },
@@ -85,23 +85,35 @@ export class PostsService {
     }
 
     async editMyPost(userId: number, postId: number, newDataPost: UpdatePost) {
-        const validatePost = await this.validatePost(postId);
         const validateUser = await this.validateIfUserExists(userId);
-
-        if (!(validatePost && validateUser))
-            return 'error al intentar eliminar post';
-
-        const newPostData = { ...newDataPost, creatorPostId: userId };
-        const updatePost = await this.prisma.posts.update({
+        const validatePost = await this.prisma.posts.findUnique({
             where: {
                 id: postId,
             },
-            data: newPostData,
+        });
+
+        if (!validateUser) return 'error al intentar eliminar post';
+        if (validatePost.creatorPostId !== userId)
+            throw new UnauthorizedException('el usuario no creo el post');
+
+        const updatePost = await this.prisma.posts.update({
+            where: {
+                // creatorPostId: userId,
+                id: postId,
+            },
+            data: newDataPost,
         });
 
         if (!updatePost) throw new BadRequestException('error al actualizar');
 
         return updatePost;
+    }
+
+    async showCommentsToPosts(postId: number) {
+        const validatePost = await this.validatePost(postId);
+
+        if (validatePost) {
+        }
     }
 
     async showOnlyMyPosts(userId: number) {
@@ -116,7 +128,16 @@ export class PostsService {
 
             if (!findMyPosts) throw new UnauthorizedException('el usuario no creo');
 
-            return findMyPosts
+            return findMyPosts;
         }
+    }
+
+    async showPopularPosts() {
+        const getPosts = await this.prisma.posts.findMany();
+        const filterBetterPosts = getPosts.filter(
+            (likes) => likes.likesCount >= 10,
+        );
+
+        return filterBetterPosts;
     }
 }

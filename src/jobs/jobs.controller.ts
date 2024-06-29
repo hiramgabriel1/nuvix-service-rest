@@ -19,7 +19,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 export class JobsController {
   constructor(private readonly jobsService: JobsService) { }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post('/:userId/create-post')
   createPost(
     @Param('userId', ParseIntPipe) userId: number,
