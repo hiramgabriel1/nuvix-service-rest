@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
@@ -60,7 +61,22 @@ export class PostsController {
 
   // @UseGuards(AuthGuard)
   @Get('/popular-posts')
-  popularPosts(){
-    return this.postsService.showPopularPosts()
+  popularPosts() {
+    return this.postsService.showPopularPosts();
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('/pagination')
+  paginationPosts(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.postsService.paginationPosts(page, limit);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('/show/comments/post/:postId')
+  showCommentToPost(@Param('postId', ParseIntPipe) postId: number) {
+    return this.postsService.showCommentsToPosts(postId);
   }
 }

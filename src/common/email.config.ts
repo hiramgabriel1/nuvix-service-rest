@@ -18,5 +18,5 @@ export const transporter = nodemailer.createTransport({
 transporter.verify((error, success) => {
     error
         ? console.error(`error SMTP transporter ${error}`)
-        : console.log('ready to send emails!');
+        : console.log('ready to send emails!', success);
 });

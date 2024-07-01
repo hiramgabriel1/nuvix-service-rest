@@ -7,11 +7,13 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create.dto';
 import { UpdatePost } from './dto/update.dto';
+import { errorMessage } from 'src/common/error.message';
 import { Posts } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService) {}
+    private errorMessage: string
 
     async validateIfUserExists(userId: number): Promise<Boolean> {
         try {
@@ -98,7 +100,6 @@ export class PostsService {
 
         const updatePost = await this.prisma.posts.update({
             where: {
-                // creatorPostId: userId,
                 id: postId,
             },
             data: newDataPost,
@@ -109,10 +110,31 @@ export class PostsService {
         return updatePost;
     }
 
+    async paginationPosts(page: number, limit: number) {
+        const skip = (page - 1) * limit;
+
+        return this.prisma.posts.findMany({
+            take: limit,
+            skip: skip,
+        });
+    }
+
     async showCommentsToPosts(postId: number) {
         const validatePost = await this.validatePost(postId);
 
         if (validatePost) {
+            const findPost = await this.prisma.posts.findUnique({
+                where: {
+                    id: postId,
+                },
+                include: {
+                    Comments: true,
+                },
+            });
+
+            if(findPost) return findPost
+
+            return this.errorMessage            
         }
     }
 
