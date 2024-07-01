@@ -237,20 +237,14 @@ export class CandidatesListService {
     return companions;
   }
 
-  async filterPostulatesByAncientDate(userId: number, postId: number) {
-    const findUser: User = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
+  async filterPostulatesByAncientDate(postId: number) {
     const findPost: WorkPost = await this.prisma.workPost.findUnique({
       where: {
         id: postId,
       },
     });
 
-    if (!(findUser && findPost))
+    if (!findPost)
         throw new BadRequestException('usuario o post no existe');
 
     const currentDate = new Date();
@@ -269,20 +263,14 @@ export class CandidatesListService {
     return candidates;
   }
 
-  async filterPostulatesByLastDate(userId: number, postId: number) {
-    const findUser: User = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
+  async filterPostulatesByLastDate(postId: number) {
     const findPost: WorkPost = await this.prisma.workPost.findUnique({
       where: {
         id: postId,
       },
     });
 
-    if (!(findUser && findPost))
+    if (!findPost)
       throw new BadRequestException('usuario o post no existe');
 
     const currentDate = new Date();

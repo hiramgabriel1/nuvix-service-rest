@@ -12,7 +12,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller()
 export class CandidatesListController {
-  constructor(private readonly candidatesListService: CandidatesListService) {}
+  constructor(private readonly candidatesListService: CandidatesListService) { }
 
   @UseGuards(AuthGuard)
   @Post('postulate/send-application/user/:userId/post/:postId')
@@ -50,14 +50,13 @@ export class CandidatesListController {
     return this.candidatesListService.myCompanions(userId, workId);
   }
 
-  @Get('candidates/filter-by-anciant-date')
-  showPostulates(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('postId', ParseIntPipe) postId: number,
-  ) {
-    return this.candidatesListService.filterPostulatesByAncientDate(
-      userId,
-      postId,
-    );
+  @Get('candidates/filter-by-anciant-date/post/:postId')
+  showPostulatesByAncientDate(@Param('postId', ParseIntPipe) postId: number) {
+    return this.candidatesListService.filterPostulatesByAncientDate(postId);
+  }
+
+  @Get('candidates/filter-by-last-date/post/:postId')
+  showPostulatesByLastDate(@Param('postId', ParseIntPipe) postId: number) {
+    return this.candidatesListService.filterPostulatesByLastDate(postId);
   }
 }
