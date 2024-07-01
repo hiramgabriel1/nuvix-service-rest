@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CandidatesListService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async validateIfUserPostulated(
     userId: number,
@@ -237,18 +237,26 @@ export class CandidatesListService {
     return companions;
   }
 
-  async filterPostulatesByAncientDate(userId: number) {
+  async filterPostulatesByAncientDate(userId: number, postId: number) {
     const findUser: User = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
 
-    if (!findUser) throw new BadRequestException('usuario no existe');
+    const findPost: WorkPost = await this.prisma.workPost.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!(findUser && findPost))
+        throw new BadRequestException('usuario o post no existe');
 
     const currentDate = new Date();
     const candidates = await this.prisma.candidatesList.findMany({
       where: {
+        workId: postId,
         date: {
           lt: currentDate, //lt -> less than Se utiliza en consultas para filtrar registros donde el valor de un campo es menor que un valor especificado
         },
@@ -258,27 +266,35 @@ export class CandidatesListService {
       // },
     });
 
-    return candidates
+    return candidates;
   }
 
-  async filterPostulatesByLastDate(userId: number) {
+  async filterPostulatesByLastDate(userId: number, postId: number) {
     const findUser: User = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
 
-    if (!findUser) throw new BadRequestException('usuario no existe');
+    const findPost: WorkPost = await this.prisma.workPost.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!(findUser && findPost))
+      throw new BadRequestException('usuario o post no existe');
 
     const currentDate = new Date();
     const candidates = await this.prisma.candidatesList.findMany({
       where: {
+        workId: postId,
         date: {
-          gt: currentDate, // gt --> mayor o igual q 
+          gt: currentDate, // gt --> mayor o igual q
         },
       },
     });
 
-    return candidates
+    return candidates;
   }
 }

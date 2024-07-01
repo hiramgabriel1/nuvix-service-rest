@@ -6,7 +6,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { JobsModule } from './jobs/jobs.module';
 import { CandidatesListModule } from './candidates-list/candidates-list.module';
-import { ChatModule } from './chat/chat.module';
 import { ProfileModule } from './profile/profile.module';
 import { ProfileController } from './profile/profile.controller';
 import { CandidatesListController } from './candidates-list/candidates-list.controller';
@@ -14,8 +13,6 @@ import { JobsController } from './jobs/jobs.controller';
 import { ProfileService } from './profile/profile.service';
 import { CandidatesListService } from './candidates-list/candidates-list.service';
 import { JobsService } from './jobs/jobs.service';
-import { ChatController } from './chat/chat.controller';
-import { ChatService } from './chat/chat.service';
 import { ReportsModule } from './reports/reports.module';
 import { EmailModule } from './email/email.module';
 import { EmailController } from './email/email.controller';
@@ -48,7 +45,6 @@ import { PostsModule } from './posts/posts.module';
     JobsModule,
     CandidatesListModule,
     ProfileModule,
-    ChatModule,
     ReportsModule,
     EmailModule,
     NotificationsModule,
@@ -61,7 +57,6 @@ import { PostsModule } from './posts/posts.module';
     ProfileController,
     CandidatesListController,
     JobsController,
-    ChatController,
     EmailController,
     ReportsController,
     NotificationsController,
@@ -74,7 +69,6 @@ import { PostsModule } from './posts/posts.module';
     ProfileService,
     CandidatesListService,
     JobsService,
-    ChatService,
     EmailService,
     ReportsService,
     NotificationsService,
