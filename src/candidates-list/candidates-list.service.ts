@@ -237,5 +237,48 @@ export class CandidatesListService {
     return companions;
   }
 
-  async filterPostulates() {}
+  async filterPostulatesByAncientDate(userId: number) {
+    const findUser: User = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!findUser) throw new BadRequestException('usuario no existe');
+
+    const currentDate = new Date();
+    const candidates = await this.prisma.candidatesList.findMany({
+      where: {
+        date: {
+          lt: currentDate, //lt -> less than Se utiliza en consultas para filtrar registros donde el valor de un campo es menor que un valor especificado
+        },
+      },
+      // select: {
+      //   date: true,
+      // },
+    });
+
+    return candidates
+  }
+
+  async filterPostulatesByLastDate(userId: number) {
+    const findUser: User = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!findUser) throw new BadRequestException('usuario no existe');
+
+    const currentDate = new Date();
+    const candidates = await this.prisma.candidatesList.findMany({
+      where: {
+        date: {
+          gt: currentDate, // gt --> mayor o igual q 
+        },
+      },
+    });
+
+    return candidates
+  }
 }

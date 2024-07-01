@@ -93,7 +93,7 @@ export class PostsService {
             },
         });
 
-        if (!validateUser) return 'error al intentar eliminar post';
+        if (!validateUser) return this.errorMessage
         if (validatePost.creatorPostId !== userId)
             throw new UnauthorizedException('el usuario no creo el post');
 
@@ -147,7 +147,8 @@ export class PostsService {
                 },
             });
 
-            if (!findMyPosts) throw new UnauthorizedException('el usuario no creo');
+            if (!findMyPosts) 
+                throw new UnauthorizedException('el usuario no creo');
 
             return findMyPosts;
         }

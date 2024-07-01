@@ -73,13 +73,13 @@ model Posts {
 }
 
 model Comments {
-  id            Int    @id @default(autoincrement())
-  postId        Int
-  post          Posts  @relation(fields: [postId], references: [id])
-  creatorId     Int
-  creator       User   @relation(fields: [creatorId], references: [id])
-  content       String
-  createdAt     DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Posts    @relation(fields: [postId], references: [id])
+  creatorId Int
+  creator   User     @relation(fields: [creatorId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
 }
 
 model CommentsPost {
@@ -95,6 +95,7 @@ model CandidatesList {
   username          String
   descriptionLong   String
   workId            Int
+  date              DateTime @default(now())
   isAccepted        Boolean  @default(false)
   isWaitingResponse Boolean  @default(true)
   workPostulated    WorkPost @relation(fields: [workId], references: [id])
