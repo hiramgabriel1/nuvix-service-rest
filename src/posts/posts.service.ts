@@ -8,12 +8,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create.dto';
 import { UpdatePost } from './dto/update.dto';
 import { errorMessage } from 'src/common/error.message';
-import { Posts } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
     constructor(private prisma: PrismaService) {}
-    private errorMessage: string
+    private errorMessage: string = errorMessage
 
     async validateIfUserExists(userId: number): Promise<Boolean> {
         try {
