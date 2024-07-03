@@ -8,11 +8,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create.dto';
 import { UpdatePost } from './dto/update.dto';
 import { errorMessage } from 'src/common/error.message';
+import { Posts } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
-    constructor(private prisma: PrismaService) {}
-    private errorMessage: string = errorMessage
+    constructor(private prisma: PrismaService) { }
+    private errorMessage: string = errorMessage;
 
     async validateIfUserExists(userId: number): Promise<Boolean> {
         try {
@@ -44,7 +45,10 @@ export class PostsService {
         return true;
     }
 
-    async userCreatePost(userId: number, postData: CreatePostDto) {
+    async userCreatePost(
+        userId: number,
+        postData: CreatePostDto,
+    ): Promise<Posts | string> {
         const userFinded = await this.validateIfUserExists(userId);
 
         if (userFinded) {
@@ -59,15 +63,19 @@ export class PostsService {
         }
     }
 
-    async showPosts() {
+    async showPosts(): Promise<{ message: string; posts: Posts } | Object> {
         const allPosts = await this.prisma.posts.findMany();
 
-        if (!allPosts) return { message: 'no se han encontrado posts' };
+        if (!allPosts)
+            return { message: 'no se han encontrado posts', posts: null };
 
-        return allPosts;
+        return {
+            message: `post showed`,
+            posts: allPosts,
+        };
     }
 
-    async deleteMyPost(userId: number, postId: number) {
+    async deleteMyPost(userId: number, postId: number): Promise<Posts> {
         const validateUser = await this.validateIfUserExists(userId);
         const validatePost = await this.validatePost(postId);
 
@@ -85,7 +93,11 @@ export class PostsService {
         }
     }
 
-    async editMyPost(userId: number, postId: number, newDataPost: UpdatePost) {
+    async editMyPost(
+        userId: number,
+        postId: number,
+        newDataPost: UpdatePost,
+    ): Promise<Posts[] | Object> {
         const validateUser = await this.validateIfUserExists(userId);
         const validatePost = await this.prisma.posts.findUnique({
             where: {
@@ -93,7 +105,7 @@ export class PostsService {
             },
         });
 
-        if (!validateUser) return this.errorMessage
+        if (!validateUser) return this.errorMessage;
         if (validatePost.creatorPostId !== userId)
             throw new UnauthorizedException('el usuario no creo el post');
 
@@ -109,7 +121,7 @@ export class PostsService {
         return updatePost;
     }
 
-    async paginationPosts(page: number, limit: number) {
+    async paginationPosts(page: number, limit: number): Promise<Posts[]> {
         const skip = (page - 1) * limit;
 
         return this.prisma.posts.findMany({
@@ -118,7 +130,7 @@ export class PostsService {
         });
     }
 
-    async showCommentsToPosts(postId: number) {
+    async showCommentsToPosts(postId: number): Promise<Posts | Object> {
         const validatePost = await this.validatePost(postId);
 
         if (validatePost) {
@@ -131,13 +143,13 @@ export class PostsService {
                 },
             });
 
-            if(findPost) return findPost
+            if (findPost) return findPost;
 
-            return this.errorMessage            
+            return this.errorMessage;
         }
     }
 
-    async showOnlyMyPosts(userId: number) {
+    async showOnlyMyPosts(userId: number): Promise<Posts[]> {
         const user = await this.validateIfUserExists(userId);
 
         if (user) {
@@ -147,14 +159,13 @@ export class PostsService {
                 },
             });
 
-            if (!findMyPosts) 
-                throw new UnauthorizedException('el usuario no creo');
+            if (!findMyPosts) throw new UnauthorizedException('el usuario no creo');
 
             return findMyPosts;
         }
     }
 
-    async showPopularPosts() {
+    async showPopularPosts(): Promise<Posts[]> {
         const getPosts = await this.prisma.posts.findMany();
         const filterBetterPosts = getPosts.filter(
             (likes) => likes.likesCount >= 10,

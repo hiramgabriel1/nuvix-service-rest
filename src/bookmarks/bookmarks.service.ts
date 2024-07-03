@@ -1,8 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Bookmarks, User, WorkPost } from '@prisma/client';
+import {
+    BadRequestException,
+    HttpCode,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from '@nestjs/common';
+import { Bookmarks, Posts, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { errorMessage } from 'src/common/error.message';
-import { BAD_REQUEST } from 'apicustomerrors';
+// import { type BAD_REQUEST } from 'apicustomerrors';
 
 @Injectable()
 export class PostsSavesService {
@@ -26,42 +32,55 @@ export class PostsSavesService {
         }
     }
 
-    async validatePost(postId: number, userId: number) {
-        const searchPost = await this.prisma.workPost.findFirst({
-            where: {
-                id: postId,
-            },
-        });
+    async validatePost(postId: number): Promise<Posts | boolean> {
+        const searchPost = postId
+            ? await this.prisma.posts.findFirst({
+                where: {
+                    id: postId,
+                },
+            })
+            : false;
 
-        if (!searchPost) throw new BadRequestException('the post dont exists');
+        if (!searchPost) 
+            throw new BadRequestException('the post dont exists');
 
         return true;
     }
 
-    async myBookmarksSaved(userId: number) {
+    async myBookmarksSaved(userId: number): Promise<Bookmarks[]> {
         const findUser = await this.validateUser(userId);
 
         if (!findUser) throw new BadRequestException('el usuario no existe');
 
-        const myBookmarks = await this.prisma.user.findMany({
+        const bookmarksFinded = await this.prisma.bookmarks.findMany({
             where: {
-                id: userId,
-            },
-            include: {
-                Bookmarks: true,
+                userId: userId,
             },
         });
 
-        return myBookmarks;
+        return bookmarksFinded;
     }
 
     async addPostToMyList(
         postId: number,
         userId: number,
-    ): Promise<Bookmarks | string | any> {
-        const validation = await this.validatePost(postId, userId);
+    ): Promise<Bookmarks | string> {
+        const validation = await this.validatePost(postId);
 
         if (validation) {
+            const existingBookmark = await this.prisma.bookmarks.findFirstOrThrow({
+                where: {
+                    idPost: postId,
+                    userId: userId,
+                },
+            });
+
+            if (existingBookmark)
+                throw new HttpException(
+                    'posts already is saved',
+                    HttpStatus.BAD_REQUEST,
+                );
+
             const saveBookmark = await this.prisma.bookmarks.create({
                 data: {
                     idPost: postId,
@@ -81,7 +100,7 @@ export class PostsSavesService {
     ): Promise<{ message: string; Bookmark: Bookmarks }> {
         const findUser = await this.validateUser(userId);
 
-        if (!findUser) throw new BAD_REQUEST(`${userId} user is not found`);
+        if (!findUser) throw new BadRequestException(`${userId} user is not found`);
 
         await this.prisma.bookmarks.findFirstOrThrow({
             where: {

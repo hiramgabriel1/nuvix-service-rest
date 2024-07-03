@@ -10,9 +10,9 @@ import { CreatePostDto } from './dto/post.dto';
 
 @Injectable()
 export class JobsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-  async validateIfUserExists(userId: number) {
+  async validateIfUserExists(userId: number): Promise<Boolean> {
     const findUser = await this.prisma.user.findFirst({
       where: {
         id: userId,
@@ -54,12 +54,13 @@ export class JobsService {
     });
   }
 
-  async showPosts() {
+  async showPosts(): Promise<WorkPost | Object> {
     const posts = await this.prisma.workPost.findMany({
       include: {
         author: true,
       },
     });
+    
     return {
       totalPosts: posts.length,
       post: posts,
@@ -134,7 +135,7 @@ export class JobsService {
     return myPosts;
   }
 
-  async viewMyPostulates(userId: number) {
+  async viewMyPostulates(userId: number): Promise<CandidatesList[]> {
     const validateUser = await this.validateIfUserExists(userId);
 
     if (!validateUser) throw new BadRequestException('el usuario no existe');
@@ -154,7 +155,9 @@ export class JobsService {
     return myPostulates;
   }
 
-  async viewMyPosts(userId: number): Promise<WorkPost | CandidatesList | any> {
+  async viewMyPosts(
+    userId: number,
+  ): Promise<WorkPost | CandidatesList | Object> {
     const validateUser = await this.validateIfUserExists(userId);
 
     if (!validateUser)

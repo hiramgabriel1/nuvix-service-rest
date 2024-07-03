@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CandidatesListService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async validateIfUserPostulated(
     userId: number,
@@ -51,7 +51,7 @@ export class CandidatesListService {
   async validateIfPostulatedIsRepeat(
     userId: number,
     postId: number,
-  ): Promise<any> {
+  ): Promise<CandidatesList | boolean> {
     const postulates = await this.prisma.candidatesList.findFirst({
       where: {
         workId: postId,
@@ -211,7 +211,7 @@ export class CandidatesListService {
   async myCompanions(
     userId: number,
     workId: number,
-  ): Promise<CandidatesList | any> {
+  ): Promise<CandidatesList[]> {
     const validatePostulate = await this.prisma.candidatesList.findMany({
       where: {
         workId: workId,
@@ -237,15 +237,16 @@ export class CandidatesListService {
     return companions;
   }
 
-  async filterPostulatesByAncientDate(postId: number) {
+  async filterPostulatesByAncientDate(
+    postId: number,
+  ): Promise<WorkPost[] | Object> {
     const findPost: WorkPost = await this.prisma.workPost.findUnique({
       where: {
         id: postId,
       },
     });
 
-    if (!findPost)
-        throw new BadRequestException('usuario o post no existe');
+    if (!findPost) throw new BadRequestException('usuario o post no existe');
 
     const currentDate = new Date();
     const candidates = await this.prisma.candidatesList.findMany({
@@ -270,8 +271,7 @@ export class CandidatesListService {
       },
     });
 
-    if (!findPost)
-      throw new BadRequestException('post dont exists');
+    if (!findPost) throw new BadRequestException('post dont exists');
 
     const currentDate = new Date();
     const candidates = await this.prisma.candidatesList.findMany({
