@@ -122,6 +122,7 @@ model Reports {
 model Bookmarks {
   id            Int      @id @default(autoincrement())
   idPost        Int
-  postSavedUser User     @relation(fields: [idPost], references: [id])
+  userId        Int
+  postSavedUser User     @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now())
 }
