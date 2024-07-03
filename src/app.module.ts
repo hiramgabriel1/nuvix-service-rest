@@ -31,6 +31,7 @@ import { PostsSavesController } from './bookmarks/bookmarks.controller';
 import { PostsService } from './posts/posts.service';
 import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { PostsModule } from './posts/posts.module';
     NotificationsModule,
     MatchsModule,
     PostsSavesModule,
-    PostsModule
+    PostsModule,
+    PaymentsModule
   ],
   controllers: [
     UserController,

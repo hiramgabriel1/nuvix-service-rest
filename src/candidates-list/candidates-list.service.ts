@@ -271,7 +271,7 @@ export class CandidatesListService {
     });
 
     if (!findPost)
-      throw new BadRequestException('usuario o post no existe');
+      throw new BadRequestException('post dont exists');
 
     const currentDate = new Date();
     const candidates = await this.prisma.candidatesList.findMany({

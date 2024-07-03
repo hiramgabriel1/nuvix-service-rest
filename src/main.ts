@@ -9,11 +9,8 @@ async function bootstrap() {
 
   await app.listen(envs.port);
   
-  app.enableCors({
-    origin: ['http://localhost:3001/', 'https://'],
-    methods: ['POST', 'GET', 'DELETE', 'PATH', 'PUT'],
-    // maxAge:
-  });
+  app.enableCors();
+  
   app.setGlobalPrefix('/api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
