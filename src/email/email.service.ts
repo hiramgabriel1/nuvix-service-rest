@@ -14,7 +14,7 @@ export class EmailService {
 
     async sendMeEmail(emailDto: EmailDto) {
         return transporter.sendMail({
-            from: envs.email_provider,
+            from: '"No Reply <no-reply@example.com>"',
             to: envs.my_email,
             subject: `Tienes un nuevo usuario: ${emailDto.email}`,
             text: `Un nuevo usuario se ha registrado con el email: ${emailDto.email}`,
@@ -38,22 +38,28 @@ export class EmailService {
         return null;
     }
 
-    async sendMail(emailDto: EmailDto) {
+    async sendMail(emailDto: EmailDto, token: string) {
         await this.validateEmail(emailDto);
-
+        console.log(emailDto.email);
+        
         try {
-            await transporter.sendMail({
-                from: `DevFinder <${envs.email_provider}>`,
+            const info = await transporter.sendMail({
+                from: "'No Reply <no-reply@example.com>'",
                 to: emailDto.email,
                 subject: `Verificación de DevFinder para ${emailDto.email}`,
                 text: 'Por favor verifica tu cuenta de pana',
-                html: '<b>Verificación en espera</b>',
+                html: `
+                        <h1>Confirmacion de cuenta</h1>
+                        <p>
+                            Haz clic en el siguiente enlace para confirmar tu cuenta:
+                        </p>
+                        <a href="http://localhost:5173/confirm?token=${token}">
+                            Confirmar Cuenta
+                        </a>    
+                    `,
             });
 
-            console.log('Correo enviado exitosamente');
-
-            // si el usuario confirma su email retornamos true y me enviamos un email
-            // await this.sendMeEmail(emailDto);
+            console.log('Correo enviado exitosamente', info.messageId);
 
             return true;
         } catch (error) {

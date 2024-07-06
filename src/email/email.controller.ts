@@ -6,10 +6,10 @@ import { EmailDto } from './dto/email.dto';
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
-  @Post('email/send/:email')
-  sendEmailConfirmation(
-    @Param('email') email: EmailDto
-  ){  
-    return this.emailService.sendMail(email)
-  }
+  // @Post('email/send/:email')
+  // sendEmailConfirmation(
+  //   @Param('email') email: EmailDto
+  // ){  
+  //   return this.emailService.sendMail(email)
+  // }
 }

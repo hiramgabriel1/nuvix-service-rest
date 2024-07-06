@@ -10,6 +10,7 @@ import { EmailService } from 'src/email/email.service';
 import { EmailDto } from 'src/email/dto/email.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CandidatesList, WorkPost, User } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     private prisma: PrismaService,
     private emailService: EmailService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   private blackList = new Set<string>();
 
@@ -42,7 +43,14 @@ export class UserService {
     const userExists = await this.isUserExists(user);
     const emailDto: EmailDto = { email };
 
-    const confirmationEmail = await this.emailService.sendMail(emailDto);
+    const token = uuidv4();
+
+    console.log(token);
+
+    const confirmationEmail = await this.emailService.sendMail(
+      emailDto, 
+      token
+    );
 
     if (userExists) throw new BadRequestException('El usuario ya existe');
 
@@ -141,5 +149,32 @@ export class UserService {
     if (!workPosts) return { message: 'no hay posts que mostrar' };
 
     return workPosts;
+  }
+
+  async removeUser(userId: number){
+    await this.prisma.workPost.deleteMany({
+      where:{
+        authorId: userId
+      }
+    })
+
+    await this.prisma.posts.deleteMany({
+      where: {
+        creatorPostId: userId
+      }
+    })
+
+    await this.prisma.comments.deleteMany({
+      where: {
+        creatorId: userId
+      }
+    })
+
+
+    return this.prisma.user.delete({
+      where: {
+        id: userId
+      }
+    })
   }
 }

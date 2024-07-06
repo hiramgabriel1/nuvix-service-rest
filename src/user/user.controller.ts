@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -14,7 +16,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/create-user')
   createUser(@Body() user: CreateUserDto) {
@@ -40,5 +42,10 @@ export class UserController {
   @Get('/show-users')
   show() {
     return this.userService.showUsers();
+  }
+
+  @Delete('/delete/:userId')
+  remove(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userService.removeUser(userId);
   }
 }

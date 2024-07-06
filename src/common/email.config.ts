@@ -1,4 +1,5 @@
 import * as nodemailer from 'nodemailer';
+import { from } from 'rxjs';
 import { envs } from 'src/config/config';
 
 export const transporter = nodemailer.createTransport({
@@ -13,7 +14,9 @@ export const transporter = nodemailer.createTransport({
         rejectUnauthorized: false,
     },
     debug: true,
-});
+},
+
+);
 
 transporter.verify((error, success) => {
     error

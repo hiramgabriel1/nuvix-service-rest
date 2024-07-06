@@ -16,6 +16,7 @@ CREATE TABLE "User" (
     "titleWork" VARCHAR(80) NOT NULL,
     "isCurrent" BOOLEAN NOT NULL,
     "isAdminUser" BOOLEAN NOT NULL DEFAULT false,
+    "isUserPremium" BOOLEAN NOT NULL DEFAULT false,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" VARCHAR(300) NOT NULL,
     "titleProject" VARCHAR(80) NOT NULL,
@@ -45,12 +46,48 @@ CREATE TABLE "WorkPost" (
 );
 
 -- CreateTable
+CREATE TABLE "Posts" (
+    "id" SERIAL NOT NULL,
+    "titlePost" TEXT NOT NULL,
+    "descriptionPost" TEXT NOT NULL,
+    "photoUrlWallpaper" TEXT NOT NULL,
+    "imageUrlReference" TEXT NOT NULL,
+    "likesCount" INTEGER NOT NULL DEFAULT 0,
+    "categoryPost" TEXT NOT NULL,
+    "creatorPostId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Posts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Comments" (
+    "id" SERIAL NOT NULL,
+    "postId" INTEGER NOT NULL,
+    "creatorId" INTEGER NOT NULL,
+    "content" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Comments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "CommentsPost" (
+    "id" SERIAL NOT NULL,
+    "comment" TEXT NOT NULL,
+    "userCreatorId" INTEGER NOT NULL,
+
+    CONSTRAINT "CommentsPost_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "CandidatesList" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "username" TEXT NOT NULL,
     "descriptionLong" TEXT NOT NULL,
     "workId" INTEGER NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "isAccepted" BOOLEAN NOT NULL DEFAULT false,
     "isWaitingResponse" BOOLEAN NOT NULL DEFAULT true,
 
@@ -83,6 +120,7 @@ CREATE TABLE "Reports" (
 CREATE TABLE "Bookmarks" (
     "id" SERIAL NOT NULL,
     "idPost" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Bookmarks_pkey" PRIMARY KEY ("id")
@@ -98,6 +136,18 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 ALTER TABLE "WorkPost" ADD CONSTRAINT "WorkPost_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Posts" ADD CONSTRAINT "Posts_creatorPostId_fkey" FOREIGN KEY ("creatorPostId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Comments" ADD CONSTRAINT "Comments_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Posts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Comments" ADD CONSTRAINT "Comments_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommentsPost" ADD CONSTRAINT "CommentsPost_userCreatorId_fkey" FOREIGN KEY ("userCreatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "CandidatesList" ADD CONSTRAINT "CandidatesList_workId_fkey" FOREIGN KEY ("workId") REFERENCES "WorkPost"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -107,4 +157,4 @@ ALTER TABLE "CandidatesList" ADD CONSTRAINT "CandidatesList_userId_fkey" FOREIGN
 ALTER TABLE "Reports" ADD CONSTRAINT "Reports_userReporteredId_fkey" FOREIGN KEY ("userReporteredId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Bookmarks" ADD CONSTRAINT "Bookmarks_idPost_fkey" FOREIGN KEY ("idPost") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bookmarks" ADD CONSTRAINT "Bookmarks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
