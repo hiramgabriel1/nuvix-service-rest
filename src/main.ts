@@ -8,10 +8,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   await app.listen(envs.port);
-  
-  app.enableCors();
-  
-  app.setGlobalPrefix('/api/v1');
+
+  app.enableCors({
+    origin: 'http://localhost:5173/',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 
+    'Content-Type, Authorization',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
+  // app.setGlobalPrefix('/api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -19,7 +26,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalGuards()
+  app.useGlobalGuards();
 
   logger.log(`Applicaction listening on port ${envs.port}`);
 }

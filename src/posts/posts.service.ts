@@ -63,8 +63,23 @@ export class PostsService {
         }
     }
 
-    async showPosts(): Promise<{ message: string; posts: Posts } | Object> {
-        const allPosts = await this.prisma.posts.findMany();
+    async showPosts(): Promise<{ message: string; posts: Posts[] } | Object> {
+        const allPosts = await this.prisma.posts.findMany({
+            select: {
+                titlePost: true,
+                descriptionPost: true,
+                categoryPost: true,
+                imageUrlReference: true,
+                photoUrlWallpaper: true,
+                likesCount: true,
+                createdAt: true,
+                creatorPost: {
+                    select: {
+                        username: true,
+                    },
+                },
+            },
+        });
 
         if (!allPosts)
             return { message: 'no se han encontrado posts', posts: null };
@@ -159,14 +174,29 @@ export class PostsService {
                 },
             });
 
-            if (!findMyPosts) throw new UnauthorizedException('el usuario no creo');
+            if (!findMyPosts) throw new BadRequestException('el usuario no creo');
 
             return findMyPosts;
         }
     }
 
-    async showPopularPosts(): Promise<Posts[]> {
-        const getPosts = await this.prisma.posts.findMany();
+    async showPopularPosts(): Promise<Posts[] | Object> {
+        const getPosts = await this.prisma.posts.findMany({
+            select: {
+                titlePost: true,
+                descriptionPost: true,
+                categoryPost: true,
+                imageUrlReference: true,
+                photoUrlWallpaper: true,
+                likesCount: true,
+                createdAt: true,
+                creatorPost: {
+                    select: {
+                        username: true,
+                    },
+                },
+            },
+        });
         const filterBetterPosts = getPosts.filter(
             (likes) => likes.likesCount >= 10,
         );
