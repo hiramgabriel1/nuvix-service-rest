@@ -71,18 +71,17 @@ export class UserService {
 
   async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
     try {
-      const userFindToLogin = await this.prisma.user.findUnique({
+      const userFindToLogin = await this.prisma.user.findFirstOrThrow({
         where: {
           email: userLogin.email,
         },
-
         include: {
           workPosts: true,
         },
       });
 
       if (!userFindToLogin)
-        throw new UnauthorizedException('Usuario no existe');
+        throw new BadRequestException('Usuario no existe');
 
       const isPasswordValid = await bcrypt.compare(
         userLogin.password,
@@ -169,7 +168,6 @@ export class UserService {
         creatorId: userId
       }
     })
-
 
     return this.prisma.user.delete({
       where: {
