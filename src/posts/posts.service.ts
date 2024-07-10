@@ -66,6 +66,7 @@ export class PostsService {
     async showPosts(): Promise<{ message: string; posts: Posts[] } | Object> {
         const allPosts = await this.prisma.posts.findMany({
             select: {
+                id: true,
                 titlePost: true,
                 descriptionPost: true,
                 categoryPost: true,
@@ -183,6 +184,7 @@ export class PostsService {
     async showPopularPosts(): Promise<Posts[] | Object> {
         const getPosts = await this.prisma.posts.findMany({
             select: {
+                id: true,
                 titlePost: true,
                 descriptionPost: true,
                 categoryPost: true,
@@ -202,5 +204,18 @@ export class PostsService {
         );
 
         return filterBetterPosts;
+    }
+
+    async viewPostById(postId: number): Promise<Posts>{
+        let findPost = await this.validatePost(postId)
+
+        if(findPost){
+            const post = await this.prisma.posts.findUnique({
+                where: {
+                    id: postId
+                }
+            })
+            return post
+        }
     }
 }

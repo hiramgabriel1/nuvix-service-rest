@@ -79,4 +79,9 @@ export class PostsController {
   showCommentToPost(@Param('postId', ParseIntPipe) postId: number) {
     return this.postsService.showCommentsToPosts(postId);
   }
+
+  @Get('/view-post/:postId')
+  viewPost(@Param('postId', ParseIntPipe) postId: number){
+    return this.postsService.viewPostById(postId)
+  }
 }

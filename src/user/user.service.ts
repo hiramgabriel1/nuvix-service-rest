@@ -69,7 +69,7 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
+  async userLogin(userLogin: any): Promise<{ token: string, user: User }> {
     try {
       const userFindToLogin = await this.prisma.user.findFirstOrThrow({
         where: {
