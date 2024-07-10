@@ -18,7 +18,7 @@ export class UserService {
     private prisma: PrismaService,
     private emailService: EmailService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   private blackList = new Set<string>();
 
@@ -47,10 +47,7 @@ export class UserService {
 
     console.log(token);
 
-    const confirmationEmail = await this.emailService.sendMail(
-      emailDto, 
-      token
-    );
+    const confirmationEmail = await this.emailService.sendMail(emailDto, token);
 
     if (userExists) throw new BadRequestException('El usuario ya existe');
 
@@ -69,7 +66,7 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async userLogin(userLogin: any): Promise<{ token: string, user: User }> {
+  async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
     try {
       const userFindToLogin = await this.prisma.user.findFirstOrThrow({
         where: {
@@ -77,11 +74,17 @@ export class UserService {
         },
         include: {
           workPosts: true,
+          Bookmarks: true,
+          comments: true,
+          CommentsPostsNormal: true,
+          myReports: true,
+          Posts: true,
+          candidatesLists: true,
+          _count: true,
         },
       });
 
-      if (!userFindToLogin)
-        throw new BadRequestException('Usuario no existe');
+      if (!userFindToLogin) throw new BadRequestException('Usuario no existe');
 
       const isPasswordValid = await bcrypt.compare(
         userLogin.password,
@@ -117,6 +120,12 @@ export class UserService {
         createdAt: userFindToLogin.createdAt,
         password: userFindToLogin.password,
         workPosts: userFindToLogin.workPosts,
+        bookmarks: userFindToLogin.Bookmarks,
+        comments: userFindToLogin.comments,
+        commentsPostNormal: userFindToLogin.CommentsPostsNormal,
+        myReports: userFindToLogin.myReports,
+        myPosts: userFindToLogin.Posts,
+        candidatesList: userFindToLogin.candidatesLists,
       };
 
       return {
@@ -150,29 +159,29 @@ export class UserService {
     return workPosts;
   }
 
-  async removeUser(userId: number){
+  async removeUser(userId: number) {
     await this.prisma.workPost.deleteMany({
-      where:{
-        authorId: userId
-      }
-    })
+      where: {
+        authorId: userId,
+      },
+    });
 
     await this.prisma.posts.deleteMany({
       where: {
-        creatorPostId: userId
-      }
-    })
+        creatorPostId: userId,
+      },
+    });
 
     await this.prisma.comments.deleteMany({
       where: {
-        creatorId: userId
-      }
-    })
+        creatorId: userId,
+      },
+    });
 
     return this.prisma.user.delete({
       where: {
-        id: userId
-      }
-    })
+        id: userId,
+      },
+    });
   }
 }

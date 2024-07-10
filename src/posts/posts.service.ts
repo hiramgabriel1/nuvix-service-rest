@@ -213,6 +213,9 @@ export class PostsService {
             const post = await this.prisma.posts.findUnique({
                 where: {
                     id: postId
+                },
+                include: {
+                    Comments: true
                 }
             })
             return post

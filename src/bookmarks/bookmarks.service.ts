@@ -41,8 +41,7 @@ export class PostsSavesService {
             })
             : false;
 
-        if (!searchPost) 
-            throw new BadRequestException('the post dont exists');
+        if (!searchPost) throw new BadRequestException('the post dont exists');
 
         return true;
     }
@@ -61,25 +60,29 @@ export class PostsSavesService {
         return bookmarksFinded;
     }
 
-    async addPostToMyList(
+    async addJobToMyList(
         postId: number,
         userId: number,
     ): Promise<Bookmarks | string> {
-        const validation = await this.validatePost(postId);
+        try {
+            const postExists = await this.prisma.posts.findUnique({
+                where: { id: postId },
+            });
+            
+            if (!postExists) {
+                throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+            }
 
-        if (validation) {
-            const existingBookmark = await this.prisma.bookmarks.findFirstOrThrow({
+            const existingBookmark = await this.prisma.bookmarks.findFirst({
                 where: {
                     idPost: postId,
                     userId: userId,
                 },
             });
 
-            if (existingBookmark)
-                throw new HttpException(
-                    'posts already is saved',
-                    HttpStatus.BAD_REQUEST,
-                );
+            if (existingBookmark) {
+                throw new HttpException('Post already saved', HttpStatus.BAD_REQUEST);
+            }
 
             const saveBookmark = await this.prisma.bookmarks.create({
                 data: {
@@ -88,9 +91,17 @@ export class PostsSavesService {
                 },
             });
 
-            if (!saveBookmark) return this.errorMessage;
-
             return saveBookmark;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                console.error('Error while adding bookmark:', error);
+                throw new HttpException(
+                    'Internal Server Error',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            }
         }
     }
 

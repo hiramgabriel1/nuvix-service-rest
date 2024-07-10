@@ -12,7 +12,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 
 @Controller('bookmarks')
 export class PostsSavesController {
-  constructor(private readonly postsSavesService: PostsSavesService) {}
+  constructor(private readonly postsSavesService: PostsSavesService) { }
 
   // @UseGuards(AuthGuard)
   @Get('/show-my-bookmarks/:userId')
@@ -20,13 +20,13 @@ export class PostsSavesController {
     return this.postsSavesService.myBookmarksSaved(userId);
   }
 
-  // @UseGuards(AuthGuard)
-  @Post('/save/job/:postId/user/:userId')
-  savePost(
-    @Param('postId', ParseIntPipe) postId: number,
-    @Param('userId', ParseIntPipe) userId: number,
+  @UseGuards(AuthGuard)
+  @Post('/save-bookmark/:postId/user/:userId')
+  saveJobPost(
+    @Param('postId', ParseIntPipe) postId: number | any,
+    @Param('userId', ParseIntPipe) userId: number | any,
   ) {
-    return this.postsSavesService.addPostToMyList(postId, userId);
+    return this.postsSavesService.addJobToMyList(postId, userId);
   }
 
   // @UseGuards(AuthGuard)
