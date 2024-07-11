@@ -33,7 +33,6 @@ model User {
   role                String
   createdAt           DateTime         @default(now())
   password            String
-  // postsLikeds        String  
   workPosts           WorkPost[]
   candidatesLists     CandidatesList[]
   myReports           Reports[]
@@ -68,8 +67,9 @@ model Posts {
   categoryPost      String
   creatorPostId     Int
   creatorPost       User       @relation(fields: [creatorPostId], references: [id])
-  createdAt         DateTime   @default(now())
   Comments          Comments[]
+  bookmarks         Bookmarks[]
+  createdAt         DateTime   @default(now())
 }
 
 model Comments {
@@ -124,5 +124,6 @@ model Bookmarks {
   idPost        Int
   userId        Int
   postSavedUser User     @relation(fields: [userId], references: [id])
+  post          Posts    @relation(fields: [idPost], references: [id])
   createdAt     DateTime @default(now())
 }

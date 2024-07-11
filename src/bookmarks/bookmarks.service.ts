@@ -55,6 +55,9 @@ export class PostsSavesService {
             where: {
                 userId: userId,
             },
+            include: {
+                post: true
+            } 
         });
 
         return bookmarksFinded;
