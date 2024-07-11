@@ -152,9 +152,6 @@ export class ReportsService {
                 where: {
                     userReporteredId: userId,
                 },
-                include: {
-                    userReportered: true,
-                },
             });
 
             if (!myReports) return this.errorMessage;
