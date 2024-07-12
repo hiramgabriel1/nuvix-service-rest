@@ -85,7 +85,7 @@ export class UserController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('/show-users')
   show() {
     return this.userService.showUsers();
