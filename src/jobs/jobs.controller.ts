@@ -15,9 +15,9 @@ import { CreatePostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/post.update.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 
-@Controller('posts')
+@Controller('jobs')
 export class JobsController {
-  constructor(private readonly jobsService: JobsService) { }
+  constructor(private readonly jobsService: JobsService) {}
 
   // @UseGuards(AuthGuard)
   @Post('/:userId/create-post')
@@ -28,7 +28,7 @@ export class JobsController {
     return this.jobsService.createPostUser(userId, postCreated);
   }
 
-  @Get('/all-posts')
+  @Get('/all-jobs')
   show() {
     return this.jobsService.showPosts();
   }
@@ -70,7 +70,7 @@ export class JobsController {
     return this.jobsService.viewCandidatesToMyPosts(postId, userId);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('/my-postulates/user/:userId')
   findMyPostulates(@Param('userId', ParseIntPipe) userId: number) {
     return this.jobsService.viewMyPostulates(userId);

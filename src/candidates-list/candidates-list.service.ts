@@ -89,7 +89,7 @@ export class CandidatesListService {
   async sendApplication(
     userId: number,
     postId: number,
-  ): Promise<CandidatesList> {
+  ): Promise<CandidatesList | any> {
     const userValidation = await this.validateUserApplication(userId);
     const postValidation = await this.validatePostApplication(postId);
     const postulateUserValidation = await this.validateUserPostulate(
@@ -137,7 +137,7 @@ export class CandidatesListService {
     if (!postPostulate)
       throw new BadRequestException('error al hacer la postulacion');
 
-    return postulateToProject;
+    return postPostulate;
   }
 
   async approvePostulate(

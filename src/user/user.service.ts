@@ -145,6 +145,7 @@ export class UserService {
             candidatesLists: true,
           },
         },
+        
         Posts: true,
         Bookmarks: true,
         candidatesLists: true,

@@ -143,9 +143,11 @@ export class JobsService {
     const myPostulates = await this.prisma.candidatesList.findMany({
       where: {
         id: userId,
+        // userId: userId
       },
       include: {
         workPostulated: true,
+        // user: true
       },
     });
 

@@ -77,7 +77,7 @@ export class UserController {
       const { password, ...result } = user;
       console.log(result);
 
-      return result;
+        return result;
     } catch (error) {
       console.log(error);
       
