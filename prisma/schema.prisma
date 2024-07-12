@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("postgresql://nuvix_database_user:YBlSyUV3MJFZjbHLsu5Jm1aCv3j7DEje@dpg-cq87euks1f4s73cgjt4g-a.oregon-postgres.render.com/nuvix_database")
 }
 
 model User {
@@ -58,18 +58,18 @@ model WorkPost {
 }
 
 model Posts {
-  id                Int        @id @default(autoincrement())
+  id                Int         @id @default(autoincrement())
   titlePost         String
   descriptionPost   String
   photoUrlWallpaper String
   imageUrlReference String
-  likesCount        Int        @default(0)
+  likesCount        Int         @default(0)
   categoryPost      String
   creatorPostId     Int
-  creatorPost       User       @relation(fields: [creatorPostId], references: [id])
+  creatorPost       User        @relation(fields: [creatorPostId], references: [id])
   Comments          Comments[]
   bookmarks         Bookmarks[]
-  createdAt         DateTime   @default(now())
+  createdAt         DateTime    @default(now())
 }
 
 model Comments {

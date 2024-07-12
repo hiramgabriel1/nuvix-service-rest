@@ -199,6 +199,7 @@ export class PostsService {
                 },
             },
         });
+
         const filterBetterPosts = getPosts.filter(
             (likes) => likes.likesCount >= 10,
         );
