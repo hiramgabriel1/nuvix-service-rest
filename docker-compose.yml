@@ -4,13 +4,13 @@ services:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=vopper
-      - POSTGRES_PASSWORD=vopper
-      - POSTGRES_DB=vopper
+      - POSTGRES_USER=nuvix_database_user
+      - POSTGRES_PASSWORD=YBlSyUV3MJFZjbHLsu5Jm1aCv3j7DEje
+      - POSTGRES_DB=nuvix_database
     volumes:
       - ./postgres:/var/lib/postgresql/data
     ports:
-      - '5438:5432'
+      - '5432:5432'
 
   redisDB:
     image: redis:latest
