@@ -46,6 +46,7 @@ model WorkPost {
   id              Int              @id @default(autoincrement())
   authorId        Int
   projectTitle    String
+  projectDescription  String
   projectLocation String
   isProjectRemote Boolean          @default(false)
   salaryRange     Decimal

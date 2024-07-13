@@ -19,7 +19,7 @@ import { AuthGuard } from 'src/guard/auth.guard';
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post('/:userId/create-post')
   createPost(
     @Param('userId', ParseIntPipe) userId: number,
@@ -70,7 +70,7 @@ export class JobsController {
     return this.jobsService.viewCandidatesToMyPosts(postId, userId);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('/my-postulates/user/:userId')
   findMyPostulates(@Param('userId', ParseIntPipe) userId: number) {
     return this.jobsService.viewMyPostulates(userId);

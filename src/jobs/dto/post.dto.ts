@@ -1,10 +1,8 @@
 import {
     IsBoolean,
     IsDecimal,
-    IsInt,
     IsNotEmpty,
     IsString,
-    MaxLength,
     IsArray,
 } from 'class-validator';
 
@@ -18,11 +16,15 @@ export class CreatePostDto {
     @IsNotEmpty()
     readonly projectLocation: string;
 
+    @IsString()
+    // @IsNotEmpty()
+    readonly projectDescription: string
+
     @IsBoolean()
     readonly isProjectRemote: boolean;
 
     @IsDecimal()
-    @IsNotEmpty()
+    // @IsNotEmpty()
     readonly salaryRange: number;
 
     @IsBoolean()
