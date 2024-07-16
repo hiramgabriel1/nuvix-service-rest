@@ -20,7 +20,7 @@ export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   @UseGuards(AuthGuard)
-  @Post('/:userId/create-post')
+  @Post('/:userId/create-job')
   createPost(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() postCreated: CreatePostDto,

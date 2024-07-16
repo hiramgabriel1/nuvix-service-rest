@@ -33,6 +33,8 @@ model User {
   role                String
   createdAt           DateTime         @default(now())
   password            String
+  confirmToken        String?
+  emailVerified       Boolean          @default(false)
   workPosts           WorkPost[]
   candidatesLists     CandidatesList[]
   myReports           Reports[]
@@ -43,34 +45,34 @@ model User {
 }
 
 model WorkPost {
-  id              Int              @id @default(autoincrement())
-  authorId        Int
-  projectTitle    String
-  projectDescription  String
-  projectLocation String
-  isProjectRemote Boolean          @default(false)
-  salaryRange     Decimal
-  isPayment       Boolean          @default(false)
-  skills          String[]
-  author          User             @relation(fields: [authorId], references: [id])
-  createdAt       DateTime         @default(now())
-  modifiedAt      DateTime         @default(now())
-  candidatesLists CandidatesList[]
+  id                 Int              @id @default(autoincrement())
+  authorId           Int
+  projectTitle       String
+  projectDescription String
+  projectLocation    String
+  isProjectRemote    Boolean          @default(false)
+  salaryRange        Decimal
+  isPayment          Boolean          @default(false)
+  skills             String[]
+  author             User             @relation(fields: [authorId], references: [id])
+  createdAt          DateTime         @default(now())
+  modifiedAt         DateTime         @default(now())
+  candidatesLists    CandidatesList[]
 }
 
 model Posts {
-  id                Int        @id @default(autoincrement())
+  id                Int         @id @default(autoincrement())
   titlePost         String
   descriptionPost   String
   photoUrlWallpaper String
   imageUrlReference String
-  likesCount        Int        @default(0)
+  likesCount        Int         @default(0)
   categoryPost      String
   creatorPostId     Int
-  creatorPost       User       @relation(fields: [creatorPostId], references: [id])
+  creatorPost       User        @relation(fields: [creatorPostId], references: [id])
   Comments          Comments[]
   bookmarks         Bookmarks[]
-  createdAt         DateTime   @default(now())
+  createdAt         DateTime    @default(now())
 }
 
 model Comments {

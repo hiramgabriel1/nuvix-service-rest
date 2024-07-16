@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
     IsBoolean,
     IsDecimal,
@@ -7,7 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreatePostDto {
-
     @IsString()
     @IsNotEmpty()
     readonly projectTitle: string;
@@ -17,17 +17,19 @@ export class CreatePostDto {
     readonly projectLocation: string;
 
     @IsString()
-    // @IsNotEmpty()
-    readonly projectDescription: string
+    @IsNotEmpty()
+    readonly projectDescription: string;
 
     @IsBoolean()
+    @Transform(({ value }) => value === 'true' || value === true)
     readonly isProjectRemote: boolean;
 
     @IsDecimal()
-    // @IsNotEmpty()
+    @IsNotEmpty()
     readonly salaryRange: number;
 
     @IsBoolean()
+    @Transform(({ value }) => value === 'true' || value === true)
     readonly isPayment: boolean;
 
     @IsArray()

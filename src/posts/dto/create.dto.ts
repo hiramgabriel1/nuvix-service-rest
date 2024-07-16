@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
@@ -20,6 +20,9 @@ export class CreatePostDto {
   @IsString()
   @IsOptional()
   readonly imageUrlReference: string;
+
+  @IsNumber()
+  readonly countLike: number
 
   @IsString()
   @IsNotEmpty()

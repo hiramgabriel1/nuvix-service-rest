@@ -41,6 +41,7 @@ export class EmailService {
     async sendMail(emailDto: EmailDto, token: string) {
         await this.validateEmail(emailDto);
         console.log(emailDto.email);
+        console.log(token);
         
         try {
             const info = await transporter.sendMail({
@@ -53,7 +54,7 @@ export class EmailService {
                         <p>
                             Haz clic en el siguiente enlace para confirmar tu cuenta:
                         </p>
-                        <a href="http://localhost:5173/confirm?token=${token}">
+                        <a href="http://localhost:5173/auth/register/confirm?token=${token}">
                             Confirmar Cuenta
                         </a>    
                     `,

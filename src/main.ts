@@ -10,7 +10,10 @@ async function bootstrap() {
   await app.listen(envs.port);
 
   app.enableCors({
-    origin: 'http://localhost:5173/',
+    origin: [
+      'http://localhost:5173/', 
+      'https://client-devfinders.vercel.app/'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
     // preflightContinue: false,

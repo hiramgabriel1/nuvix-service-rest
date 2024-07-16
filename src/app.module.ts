@@ -15,7 +15,6 @@ import { CandidatesListService } from './candidates-list/candidates-list.service
 import { JobsService } from './jobs/jobs.service';
 import { ReportsModule } from './reports/reports.module';
 import { EmailModule } from './email/email.module';
-import { EmailController } from './email/email.controller';
 import { EmailService } from './email/email.service';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MatchsModule } from './matchs/matchs.module';
@@ -59,7 +58,6 @@ import { PaymentsModule } from './payments/payments.module';
     ProfileController,
     CandidatesListController,
     JobsController,
-    EmailController,
     ReportsController,
     NotificationsController,
     MatchsController,

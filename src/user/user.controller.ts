@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -31,6 +33,18 @@ export class UserController {
     return this.userService.addUser(user);
   }
 
+  @Get('/confirm-token')
+  async confirmTokenAccount(
+    @Query('token') token: string,
+  ): Promise<{ message: string }> {
+    if (!token) throw new BadRequestException('token no recibido');
+
+    const user = await this.userService.confirmToken(token);
+    if (!user) throw new BadRequestException('token no recibido');
+
+    return { message: 'Token confirmado' };
+  }
+
   @Post('/auth-login')
   authUser(@Body() userLogin: LoginDto) {
     return this.userService.userLogin(userLogin);
@@ -52,8 +66,8 @@ export class UserController {
   async user(@Req() request: Request) {
     try {
       const { authorization }: any = request.headers;
-      if (!authorization || authorization.trim() === '') 
-          throw new UnauthorizedException('Please provide token');
+      if (!authorization || authorization.trim() === '')
+        throw new UnauthorizedException('Please provide token');
 
       const authToken = authorization.replace(/bearer/gim, '').trim();
       const data = await this.jwtService.verify(authToken, {
@@ -62,8 +76,8 @@ export class UserController {
 
       console.log(data);
       console.log(data.id);
-      
-      if (!data || !data.id) 
+
+      if (!data || !data.id)
         throw new UnauthorizedException('Invalid JWT token');
 
       const user = await this.prisma.user.findFirstOrThrow({
@@ -77,10 +91,10 @@ export class UserController {
       const { password, ...result } = user;
       console.log(result);
 
-        return result;
+      return result;
     } catch (error) {
       console.log(error);
-      
+
       throw new UnauthorizedException('Invalid token or user not found');
     }
   }

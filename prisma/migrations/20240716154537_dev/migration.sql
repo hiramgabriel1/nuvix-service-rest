@@ -25,6 +25,8 @@ CREATE TABLE "User" (
     "role" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "password" TEXT NOT NULL,
+    "confirmToken" TEXT,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -34,6 +36,7 @@ CREATE TABLE "WorkPost" (
     "id" SERIAL NOT NULL,
     "authorId" INTEGER NOT NULL,
     "projectTitle" TEXT NOT NULL,
+    "projectDescription" TEXT NOT NULL,
     "projectLocation" TEXT NOT NULL,
     "isProjectRemote" BOOLEAN NOT NULL DEFAULT false,
     "salaryRange" DECIMAL(65,30) NOT NULL,
@@ -158,3 +161,6 @@ ALTER TABLE "Reports" ADD CONSTRAINT "Reports_userReporteredId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "Bookmarks" ADD CONSTRAINT "Bookmarks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Bookmarks" ADD CONSTRAINT "Bookmarks_idPost_fkey" FOREIGN KEY ("idPost") REFERENCES "Posts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

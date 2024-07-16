@@ -11,6 +11,7 @@ import { EmailDto } from 'src/email/dto/email.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CandidatesList, WorkPost, User } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
+import { string } from 'joi';
 
 @Injectable()
 export class UserService {
@@ -38,7 +39,7 @@ export class UserService {
     });
   }
 
-  async addUser(user: CreateUserDto) {
+  async addUser(user: CreateUserDto): Promise<User | string> {
     const { email } = user;
     const userExists = await this.isUserExists(user);
     const emailDto: EmailDto = { email };
@@ -55,6 +56,7 @@ export class UserService {
     const dataUser = {
       ...user,
       password: hashedPassword,
+      confirmToken: token,
     };
 
     if (confirmationEmail) {
@@ -64,6 +66,20 @@ export class UserService {
     }
 
     return 'no se ha enviado el email';
+  }
+
+  async confirmToken(token: string): Promise<User> {
+    const accountToken = await this.prisma.user.findFirstOrThrow({
+      where: { confirmToken: token },
+    });
+
+    if (!accountToken)
+      throw new BadRequestException('Token invalido o expirado');
+
+    return this.prisma.user.update({
+      where: { id: accountToken.id },
+      data: { confirmToken: null, emailVerified: true },
+    });
   }
 
   async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
@@ -145,7 +161,7 @@ export class UserService {
             candidatesLists: true,
           },
         },
-        
+
         Posts: true,
         Bookmarks: true,
         candidatesLists: true,
