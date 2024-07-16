@@ -68,7 +68,7 @@ export class UserService {
     return 'no se ha enviado el email';
   }
 
-  async confirmToken(token: string): Promise<User> {
+  async confirmToken(token: string): Promise<{ token: User; message: string }> {
     const accountToken = await this.prisma.user.findFirstOrThrow({
       where: { confirmToken: token },
     });
@@ -76,10 +76,15 @@ export class UserService {
     if (!accountToken)
       throw new BadRequestException('Token invalido o expirado');
 
-    return this.prisma.user.update({
+    const isTokenVerified = await this.prisma.user.update({
       where: { id: accountToken.id },
       data: { confirmToken: null, emailVerified: true },
     });
+
+    return {
+      message: 'token confirmado',
+      token: isTokenVerified,
+    };
   }
 
   async userLogin(userLogin: any): Promise<{ token: string; user: User }> {
