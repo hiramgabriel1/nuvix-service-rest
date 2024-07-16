@@ -1,7 +1,7 @@
 import {
-    BadRequestException,
-    ForbiddenException,
-    Injectable,
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 import { EmailDto } from './dto/email.dto';
 import { transporter } from 'src/common/email.config';
@@ -10,46 +10,46 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class EmailService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async sendMeEmail(emailDto: EmailDto) {
-        return transporter.sendMail({
-            from: '"No Reply <no-reply@example.com>"',
-            to: envs.my_email,
-            subject: `Tienes un nuevo usuario: ${emailDto.email}`,
-            text: `Un nuevo usuario se ha registrado con el email: ${emailDto.email}`,
-        });
+  async sendMeEmail(emailDto: EmailDto) {
+    return transporter.sendMail({
+      from: '"No Reply <no-reply@example.com>"',
+      to: envs.my_email,
+      subject: `Tienes un nuevo usuario: ${emailDto.email}`,
+      text: `Un nuevo usuario se ha registrado con el email: ${emailDto.email}`,
+    });
+  }
+
+  async validateEmail(emailDto: EmailDto) {
+    const validation = await this.prisma.user.findUnique({
+      where: {
+        email: emailDto.email,
+      },
+      select: {
+        email: true,
+      },
+    });
+
+    if (validation) {
+      throw new ForbiddenException('El email ya estaba registrado');
     }
 
-    async validateEmail(emailDto: EmailDto) {
-        const validation = await this.prisma.user.findUnique({
-            where: {
-                email: emailDto.email,
-            },
-            select: {
-                email: true,
-            },
-        });
+    return null;
+  }
 
-        if (validation) {
-            throw new ForbiddenException('El email ya estaba registrado');
-        }
+  async sendMail(emailDto: EmailDto, token: string) {
+    await this.validateEmail(emailDto);
+    console.log(emailDto.email);
+    console.log(token);
 
-        return null;
-    }
-
-    async sendMail(emailDto: EmailDto, token: string) {
-        await this.validateEmail(emailDto);
-        console.log(emailDto.email);
-        console.log(token);
-        
-        try {
-            const info = await transporter.sendMail({
-                from: "'No Reply <no-reply@example.com>'",
-                to: emailDto.email,
-                subject: `Verificación de DevFinder para ${emailDto.email}`,
-                text: 'Por favor verifica tu cuenta de pana',
-                html: `
+    try {
+      const info = await transporter.sendMail({
+        from: 'No Reply <no-reply@example.com>',
+        to: emailDto.email,
+        subject: `Verificación de Nuvix Dev para ${emailDto.email}`,
+        text: 'Por favor verifica tu cuenta de pana',
+        html: `
                         <h1>Confirmacion de cuenta</h1>
                         <p>
                             Haz clic en el siguiente enlace para confirmar tu cuenta:
@@ -58,13 +58,13 @@ export class EmailService {
                             Confirmar Cuenta
                         </a>    
                     `,
-            });
+      });
 
-            console.log('Correo enviado exitosamente', info.messageId);
+      console.log('Correo enviado exitosamente', info.messageId);
 
-            return true;
-        } catch (error) {
-            throw new BadRequestException('Error al enviar el email');
-        }
+      return true;
+    } catch (error) {
+      throw new BadRequestException('Error al enviar el email');
     }
+  }
 }
