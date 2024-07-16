@@ -13,7 +13,7 @@ interface EnvVars {
 const envsSchema = joi
   .object({
     PORT: joi.number().required(),
-    DATABASE_URL_DEV: joi.string().required(),
+    // DATABASE_URL_DEV: joi.string().required(),
     EMAIL_PROVIDER: joi.string().required(),
     EMAIL_PASSWORD_PROVIDER: joi.string().required(),
     SECRET_KEY: joi.string().required(),
@@ -29,7 +29,7 @@ const envVars: EnvVars = value;
 
 export const envs = {
   port: envVars.PORT,
-  databaseUrl: envVars.DATABASE_URL_DEV,
+  // databaseUrl: envVars.DATABASE_URL_DEV,
   email_provider: envVars.EMAIL_PROVIDER,
   email_password_provider: envVars.EMAIL_PASSWORD_PROVIDER,
   secret_key: envVars.SECRET_KEY,
