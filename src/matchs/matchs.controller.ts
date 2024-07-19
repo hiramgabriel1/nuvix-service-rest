@@ -10,8 +10,4 @@ export class MatchsController {
     return this.matchsService.findMatchsByUser(userId);
   }
 
-  // @Get('/user/matchs/create/')
-  // public createMatchWeekly() {
-  //   return this.matchsService.createMatchWeekly();
-  // }
 }
