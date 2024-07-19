@@ -22,7 +22,7 @@ export class CreatePostDto {
   readonly imageUrlReference: string;
 
   @IsNumber()
-  readonly countLike: number
+  readonly likesCount: number
 
   @IsString()
   @IsNotEmpty()

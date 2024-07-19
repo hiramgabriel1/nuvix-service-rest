@@ -31,6 +31,9 @@ import { PostsService } from './posts/posts.service';
 import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
 import { PaymentsModule } from './payments/payments.module';
+import { SearchModule } from './search/search.module';
+import { SearchController } from './search/search.controller';
+import { SearchService } from './search/search.service';
 
 @Module({
   imports: [
@@ -51,7 +54,8 @@ import { PaymentsModule } from './payments/payments.module';
     MatchsModule,
     PostsSavesModule,
     PostsModule,
-    PaymentsModule
+    PaymentsModule,
+    SearchModule
   ],
   controllers: [
     UserController,
@@ -62,7 +66,8 @@ import { PaymentsModule } from './payments/payments.module';
     NotificationsController,
     MatchsController,
     PostsSavesController,
-    PostsController
+    PostsController,
+    SearchController
   ],
   providers: [
     UserService,
@@ -74,7 +79,8 @@ import { PaymentsModule } from './payments/payments.module';
     NotificationsService,
     MatchsService,
     PostsSavesService,
-    PostsService
+    PostsService,
+    SearchService
   ],
 })
 export class AppModule {}
