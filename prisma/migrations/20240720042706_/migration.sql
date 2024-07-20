@@ -129,6 +129,19 @@ CREATE TABLE "Bookmarks" (
     CONSTRAINT "Bookmarks_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "UserBeta" (
+    "id" SERIAL NOT NULL,
+    "username" TEXT NOT NULL,
+    "lastname" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "role" TEXT NOT NULL,
+    "reasons" TEXT NOT NULL,
+    "isAccepted" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "UserBeta_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 

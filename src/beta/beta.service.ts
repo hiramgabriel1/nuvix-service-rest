@@ -12,14 +12,14 @@ import { UserBeta } from '@prisma/client';
 export class BetaService {
     constructor(private prisma: PrismaService) { }
 
-    public async userExists(
-        userEmail: string,
-    ): Promise<boolean> {
+    public async userExists(userEmail: string): Promise<boolean> {
         const findUser = await this.prisma.userBeta.findFirst({
             where: {
-                email: userEmail
+                email: userEmail,
             },
         });
+
+        console.log(`userExists - User found: ${!!findUser}`);
 
         return !!findUser;
     }
@@ -27,12 +27,16 @@ export class BetaService {
     public async addUserBeta(userBeta: UserBetaDto): Promise<UserBeta> {
         const userFinded = await this.userExists(userBeta.email);
 
-        if (userFinded) 
-            throw new BadRequestException('User already exists');
+        console.log(userBeta);
 
-        return this.prisma.userBeta.create({
-            data: { ...userBeta },
+        if (userFinded) throw new BadRequestException('User already exists');
+
+        const saveUser = await this.prisma.userBeta.create({
+            data: userBeta,
         });
+
+        console.log(`addUserBeta - User created:`, saveUser);
+        return saveUser;
     }
 
     public async updateUserStatus(
@@ -40,8 +44,8 @@ export class BetaService {
         isAccepted: boolean,
     ): Promise<UserBeta[] | Object> {
         const findUser = await this.prisma.userBeta.findFirst({
-            where: { id: userId }
-        })
+            where: { id: userId },
+        });
 
         if (!findUser)
             throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
