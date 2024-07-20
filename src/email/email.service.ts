@@ -11,7 +11,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class EmailService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  async betaEmailsUser(email: string) {
+    return transporter.sendMail({
+      from: '"No reply <no-reply@nuvix.com>"',
+      to: email,
+      subject: 'Nuvix Dev | Beta',
+      text: 'Recibiras un correo en caso de ser admitido para ser beta tester. Gracias por interesarte en el proyecto y no olvides compartirlo con tus amigos!!',
+    });
+  }
 
   async sendMeEmail(emailDto: EmailDto) {
     return transporter.sendMail({
@@ -253,5 +262,5 @@ export class EmailService {
     }
   }
 
-  async notificationEmail() {}
+  async notificationEmail() { }
 }

@@ -7,10 +7,14 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserBetaDto } from './dto/addUserBeta.dto';
 import { UserBeta } from '@prisma/client';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class BetaService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private emailService: EmailService
+    ) { }
 
     public async userExists(userEmail: string): Promise<boolean> {
         const findUser = await this.prisma.userBeta.findFirst({
@@ -36,6 +40,10 @@ export class BetaService {
         });
 
         console.log(`addUserBeta - User created:`, saveUser);
+
+        // todo: send email to confirmation account
+        this.emailService.betaEmailsUser(userBeta.email)
+
         return saveUser;
     }
 
