@@ -73,4 +73,12 @@ export class BetaService {
     public showUsers(): Promise<UserBeta[]> {
         return this.prisma.userBeta.findMany();
     }
+
+    public async delete(userId: number){
+        return this.prisma.userBeta.delete({
+            where: {
+                id: userId
+            }
+        })
+    }
 }

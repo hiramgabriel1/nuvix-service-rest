@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -35,5 +36,10 @@ export class BetaController {
   @Get('/all-users')
   public show(){
     return this.betaService.showUsers()
+  }
+
+  @Delete('delete/:userId')
+  public delete(@Param('userId', ParseIntPipe) userId: number){
+    return this.betaService.delete(userId)
   }
 }

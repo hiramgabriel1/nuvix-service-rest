@@ -15,10 +15,10 @@ export class EmailService {
 
   async betaEmailsUser(email: string) {
     return transporter.sendMail({
-      from: '"No reply <no-reply@nuvix.com>"',
+      from: '"Nuvix Dev" <no-reply@nuvixdev.com>',
       to: email,
-      subject: 'Nuvix Dev | Beta',
-      text: 'Recibiras un correo en caso de ser admitido para ser beta tester. Gracias por interesarte en el proyecto y no olvides compartirlo con tus amigos!!',
+      subject: 'Nuvix Dev | Invitación para ser Beta Tester',
+      text: '¡Hola!\n\nGracias por tu interés en Nuvix Dev. Recibirás un correo en caso de ser seleccionado como beta tester. Mientras tanto, te agradecemos que compartas este proyecto con tus amigos.\n\n¡Gracias y esperamos contar contigo!\n\nEl equipo de Nuvix Dev',
     });
   }
 
