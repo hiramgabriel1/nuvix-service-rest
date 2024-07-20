@@ -11,16 +11,16 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:5173/', 
-      'https://client-devfinders.vercel.app/'
+      'http://localhost:5173/',
+      'https://client-devfinders.vercel.app/',
+      'https://nuvix.dev/',
+      'https://www.nuvix.dev/',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization',
-    // preflightContinue: false,
-    optionsSuccessStatus: 204,
+    allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+    preflightContinue: true
   });
 
-  // app.setGlobalPrefix('/api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

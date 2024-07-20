@@ -40,9 +40,7 @@ export class BetaService {
         isAccepted: boolean,
     ): Promise<UserBeta[] | Object> {
         const findUser = await this.prisma.userBeta.findFirst({
-            where: {
-                id: userId
-            }
+            where: { id: userId }
         })
 
         if (!findUser)
