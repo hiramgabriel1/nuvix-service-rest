@@ -130,3 +130,13 @@ model Bookmarks {
   post          Posts    @relation(fields: [idPost], references: [id])
   createdAt     DateTime @default(now())
 }
+
+model UserBeta {
+  id         Int     @id @default(autoincrement())
+  username   String
+  lastname   String
+  email      String
+  role       String
+  reasons    String
+  isAccepted Boolean @default(false)
+}

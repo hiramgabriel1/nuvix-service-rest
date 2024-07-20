@@ -34,6 +34,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { SearchModule } from './search/search.module';
 import { SearchController } from './search/search.controller';
 import { SearchService } from './search/search.service';
+import { BetaModule } from './beta/beta.module';
 
 @Module({
   imports: [
@@ -55,7 +56,8 @@ import { SearchService } from './search/search.service';
     PostsSavesModule,
     PostsModule,
     PaymentsModule,
-    SearchModule
+    SearchModule,
+    BetaModule
   ],
   controllers: [
     UserController,

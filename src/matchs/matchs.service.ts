@@ -1,7 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-// import { CONFLICT_ERROR } from "apicustomerrors"
-import cron from 'node-cron';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -51,13 +49,4 @@ export class MatchsService {
             (a, b) => b.lengthCommonSkills - a.lengthCommonSkills,
         );
     }
-
-    // public async createMatchWeekly() {
-    //     try {
-    //         // const allUsers
-    //     } catch (error) {
-    //         console.error(error.message);
-    //         throw new HttpException('error in service', HttpStatus.BAD_REQUEST);
-    //     }
-    // }
 }
