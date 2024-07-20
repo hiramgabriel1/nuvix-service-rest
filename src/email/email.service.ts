@@ -55,7 +55,7 @@ export class EmailService {
 
     try {
       const info = await transporter.sendMail({
-        from: 'No Reply <no-reply@example.com>',
+        from: '"Nuvix Dev" <no-reply@nuvixdev.com>',
         to: emailDto.email,
         subject: `Verificación de Nuvix Dev para ${emailDto.email}`,
         text: 'Por favor verifica tu cuenta de pana',
