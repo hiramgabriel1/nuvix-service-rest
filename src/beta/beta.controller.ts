@@ -40,6 +40,6 @@ export class BetaController {
 
   @Delete('delete/:userId')
   public delete(@Param('userId', ParseIntPipe) userId: number){
-    return this.betaService.delete(userId)
+    return this.betaService.deleteUser(userId)
   }
 }

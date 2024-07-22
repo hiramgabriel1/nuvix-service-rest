@@ -7,7 +7,7 @@ import { EmailDto } from './dto/email.dto';
 import { transporter } from 'src/common/email.config';
 import { envs } from 'src/config/config';
 import { PrismaService } from 'src/prisma/prisma.service';
-// import { emailHTML } from 'src/helper/email.template';
+import { Transporter } from 'nodemailer';
 
 @Injectable()
 export class EmailService {
@@ -20,6 +20,11 @@ export class EmailService {
       subject: 'Nuvix Dev | Invitación para ser Beta Tester',
       text: '¡Hola!\n\nGracias por tu interés en Nuvix Dev. Recibirás un correo en caso de ser seleccionado como beta tester. Mientras tanto, te agradecemos que compartas este proyecto con tus amigos.\n\n¡Gracias y esperamos contar contigo!\n\nEl equipo de Nuvix Dev',
     });
+  }
+
+  async checkStatusUser(isAccepted: boolean, userEmail: string): Promise<Transporter>{
+
+    return 
   }
 
   async sendMeEmail(emailDto: EmailDto) {

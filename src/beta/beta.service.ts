@@ -13,7 +13,7 @@ import { EmailService } from 'src/email/email.service';
 export class BetaService {
     constructor(
         private prisma: PrismaService,
-        private emailService: EmailService
+        private emailService: EmailService,
     ) { }
 
     public async userExists(userEmail: string): Promise<boolean> {
@@ -42,9 +42,13 @@ export class BetaService {
         console.log(`addUserBeta - User created:`, saveUser);
 
         // todo: send email to confirmation account
-        this.emailService.betaEmailsUser(userBeta.email)
+        this.emailService.betaEmailsUser(userBeta.email);
 
         return saveUser;
+    }
+
+    public async checkStatusUser(): Promise<'strin'> {
+        return;
     }
 
     public async updateUserStatus(
@@ -58,10 +62,12 @@ export class BetaService {
         if (!findUser)
             throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
 
-        return this.prisma.userBeta.update({
+        const updateUser = await this.prisma.userBeta.update({
             where: { id: userId },
-            data: { isAccepted: isAccepted },
+            data: { isAccepted: { set: isAccepted } },
         });
+
+        return updateUser;
     }
 
     public showUsersCandidates(): Promise<UserBeta[]> {
@@ -74,11 +80,11 @@ export class BetaService {
         return this.prisma.userBeta.findMany();
     }
 
-    public async delete(userId: number){
+    public async deleteUser(userId: number) {
         return this.prisma.userBeta.delete({
             where: {
-                id: userId
-            }
-        })
+                id: userId,
+            },
+        });
     }
 }
