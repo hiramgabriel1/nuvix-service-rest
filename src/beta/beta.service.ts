@@ -47,7 +47,9 @@ export class BetaService {
         return saveUser;
     }
 
-    public async checkStatusUser(): Promise<'strin'> {
+    public async checkStatusUser(isAccepted: boolean): Promise<'strin'> {
+        console.log(isAccepted);
+        
         return;
     }
 
@@ -67,7 +69,10 @@ export class BetaService {
             data: { isAccepted: { set: isAccepted } },
         });
 
-        return updateUser;
+        return {
+            response: updateUser,
+            sendMail: this.checkStatusUser(updateUser.isAccepted)
+        };
     }
 
     public showUsersCandidates(): Promise<UserBeta[]> {
