@@ -22,12 +22,16 @@ export class EmailService {
     });
   }
 
-  async checkStatusUser(isAccepted: boolean, userEmail: string): Promise<Transporter>{
-
-    return 
+  public async notifyUser(
+    isAccepted: boolean,
+    userEmail: string,
+  ): Promise<Transporter> {
+    console.log(isAccepted + userEmail);
+    
+    return;
   }
 
-  async sendMeEmail(emailDto: EmailDto) {
+  public async sendMeEmail(emailDto: EmailDto) {
     return transporter.sendMail({
       from: '"No Reply <no-reply@example.com>"',
       to: envs.my_email,
@@ -36,7 +40,7 @@ export class EmailService {
     });
   }
 
-  async validateEmail(emailDto: EmailDto) {
+  public async validateEmail(emailDto: EmailDto) {
     const validation = await this.prisma.user.findUnique({
       where: {
         email: emailDto.email,
@@ -53,7 +57,9 @@ export class EmailService {
     return null;
   }
 
-  async sendMail(emailDto: EmailDto, token: string) {
+  public async notificationEmail() { }
+
+  public async sendMail(emailDto: EmailDto, token: string) {
     await this.validateEmail(emailDto);
     console.log(emailDto.email);
     console.log(token);
@@ -266,6 +272,4 @@ export class EmailService {
       throw new BadRequestException('Error al enviar el email');
     }
   }
-
-  async notificationEmail() { }
 }

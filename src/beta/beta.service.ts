@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserBetaDto } from './dto/addUserBeta.dto';
 import { UserBeta } from '@prisma/client';
 import { EmailService } from 'src/email/email.service';
+import { Transporter } from 'nodemailer';
 
 @Injectable()
 export class BetaService {
@@ -41,18 +42,17 @@ export class BetaService {
 
         console.log(`addUserBeta - User created:`, saveUser);
 
-        // todo: send email to confirmation account
-
         return {
             response: saveUser,
-            sendMail: await this.emailService.betaEmailsUser(userBeta.email)
+            sendMail: await this.emailService.betaEmailsUser(userBeta.email),
         };
     }
 
-    public async checkStatusUser(isAccepted: boolean): Promise<'strin'> {
-        console.log(isAccepted);
-
-        return;
+    public async sendStatusUser(
+        isAccepted: boolean,
+        userEmail: string,
+    ): Promise<Transporter> {
+        return await this.emailService.notifyUser(isAccepted, userEmail);
     }
 
     public async updateUserStatus(
@@ -73,7 +73,10 @@ export class BetaService {
 
         return {
             response: updateUser,
-            sendMail: await this.checkStatusUser(updateUser.isAccepted)
+            sendMail: await this.sendStatusUser(
+                updateUser.isAccepted,
+                findUser.email,
+            ),
         };
     }
 
