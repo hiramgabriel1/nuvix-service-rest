@@ -13,7 +13,7 @@ import { UserBetaDto } from './dto/addUserBeta.dto';
 
 @Controller('beta')
 export class BetaController {
-  constructor(private readonly betaService: BetaService) {}
+  constructor(private readonly betaService: BetaService) { }
 
   @Post('/add-user')
   public addUser(@Body() userBeta: UserBetaDto) {
@@ -23,23 +23,25 @@ export class BetaController {
   @Patch('/update/status-user/:userId/')
   public updateStatus(
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() isAccepted: boolean
+    @Body() body: { isAccepted: boolean },
   ) {
+    const { isAccepted } = body;
+
     return this.betaService.updateUserStatus(userId, isAccepted);
   }
 
   @Get('/users-accepted/show')
-  public getUsers(){
-    return this.betaService.showUsersCandidates()
+  public getUsers() {
+    return this.betaService.showUsersCandidates();
   }
 
   @Get('/all-users')
-  public show(){
-    return this.betaService.showUsers()
+  public show() {
+    return this.betaService.showUsers();
   }
 
   @Delete('delete/:userId')
-  public delete(@Param('userId', ParseIntPipe) userId: number){
-    return this.betaService.deleteUser(userId)
+  public delete(@Param('userId', ParseIntPipe) userId: number) {
+    return this.betaService.deleteUser(userId);
   }
 }

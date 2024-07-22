@@ -54,7 +54,7 @@ export class BetaService {
     public async updateUserStatus(
         userId: number,
         isAccepted: boolean,
-    ): Promise<UserBeta[] | Object> {
+    ): Promise<UserBeta | Object> {
         const findUser = await this.prisma.userBeta.findFirst({
             where: { id: userId },
         });
