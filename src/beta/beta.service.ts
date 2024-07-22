@@ -28,7 +28,7 @@ export class BetaService {
         return !!findUser;
     }
 
-    public async addUserBeta(userBeta: UserBetaDto): Promise<UserBeta> {
+    public async addUserBeta(userBeta: UserBetaDto): Promise<UserBeta | Object> {
         const userFinded = await this.userExists(userBeta.email);
 
         console.log(userBeta);
@@ -42,14 +42,16 @@ export class BetaService {
         console.log(`addUserBeta - User created:`, saveUser);
 
         // todo: send email to confirmation account
-        this.emailService.betaEmailsUser(userBeta.email);
 
-        return saveUser;
+        return {
+            response: saveUser,
+            sendMail: await this.emailService.betaEmailsUser(userBeta.email)
+        };
     }
 
     public async checkStatusUser(isAccepted: boolean): Promise<'strin'> {
         console.log(isAccepted);
-        
+
         return;
     }
 
@@ -71,7 +73,7 @@ export class BetaService {
 
         return {
             response: updateUser,
-            sendMail: this.checkStatusUser(updateUser.isAccepted)
+            sendMail: await this.checkStatusUser(updateUser.isAccepted)
         };
     }
 
