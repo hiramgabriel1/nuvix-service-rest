@@ -35,7 +35,7 @@ export class EmailService {
       : 'Gracias por tu interés en ser beta tester de Nuvix. Lamentablemente, en esta ocasión no has sido seleccionado asi como tu ex no te seleccionó 😢. Esperamos contar contigo en futuras oportunidades. ¡Gracias por tu comprensión!';
 
     const sendNotifyUser = await transporter.sendMail({
-      from: '"No reply <no-reply@example.com>"',
+      from: '"Nuvix Dev" <no-reply@example.com>',
       to: userEmail,
       subject: subject,
       text: text,
