@@ -51,7 +51,7 @@ export class BetaService {
     public async sendStatusUser(
         isAccepted: boolean,
         userEmail: string,
-    ): Promise<Transporter> {
+    ): Promise<void> {
         return await this.emailService.notifyUser(isAccepted, userEmail);
     }
 

@@ -25,10 +25,21 @@ export class EmailService {
   public async notifyUser(
     isAccepted: boolean,
     userEmail: string,
-  ): Promise<Transporter> {
-    console.log(isAccepted + userEmail);
-    
-    return;
+  ): Promise<void> {
+   
+    isAccepted
+      ? transporter.sendMail({
+        from: '"No reply <no-reply@example.com>"',
+        to: userEmail,
+        subject: 'Has sido aceptado ',
+        text: '',
+      })
+      : transporter.sendMail({
+        from: '"No reply <no-reply@example.com>"',
+        to: userEmail,
+        subject: 'Has sido rechazado como ella te rechazo',
+        text: '',
+      });
   }
 
   public async sendMeEmail(emailDto: EmailDto) {
