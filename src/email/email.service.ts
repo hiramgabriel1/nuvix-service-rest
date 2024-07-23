@@ -7,7 +7,7 @@ import { EmailDto } from './dto/email.dto';
 import { transporter } from 'src/common/email.config';
 import { envs } from 'src/config/config';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Transporter } from 'nodemailer';
+import { SentMessageInfo, Transporter } from 'nodemailer';
 
 @Injectable()
 export class EmailService {
@@ -25,21 +25,25 @@ export class EmailService {
   public async notifyUser(
     isAccepted: boolean,
     userEmail: string,
-  ): Promise<void> {
-   
-    isAccepted
-      ? transporter.sendMail({
-        from: '"No reply <no-reply@example.com>"',
-        to: userEmail,
-        subject: 'Has sido aceptado ',
-        text: '',
-      })
-      : transporter.sendMail({
-        from: '"No reply <no-reply@example.com>"',
-        to: userEmail,
-        subject: 'Has sido rechazado como ella te rechazo',
-        text: '',
-      });
+  ): Promise<void | SentMessageInfo> {
+    const subject = isAccepted
+      ? '¡Bienvenido a Nuvix Dev Beta'
+      : 'Actualización de tu solicitud para tester de Nuvix Dev';
+
+    const text = isAccepted
+      ? 'Felicidades! Has sido aceptado como beta tester de Nuvix. Pronto recibirás más detalles sobre cómo empezar a probar nuestra aplicación. ¡Gracias por tu interés y apoyo!'
+      : 'Gracias por tu interés en ser beta tester de Nuvix. Lamentablemente, en esta ocasión no has sido seleccionado. Esperamos contar contigo en futuras oportunidades. ¡Gracias por tu comprensión!';
+
+    const sendNotifyUser = await transporter.sendMail({
+      from: '"No reply <no-reply@example.com>"',
+      to: userEmail,
+      subject: subject,
+      text: text,
+    });
+
+    console.log(sendNotifyUser);
+
+    return sendNotifyUser;
   }
 
   public async sendMeEmail(emailDto: EmailDto) {
