@@ -31,8 +31,8 @@ export class EmailService {
       : 'Actualización de tu solicitud para tester de Nuvix Dev';
 
     const text = isAccepted
-      ? 'Felicidades! Has sido aceptado como beta tester de Nuvix. Pronto recibirás más detalles sobre cómo empezar a probar nuestra aplicación. ¡Gracias por tu interés y apoyo!'
-      : 'Gracias por tu interés en ser beta tester de Nuvix. Lamentablemente, en esta ocasión no has sido seleccionado. Esperamos contar contigo en futuras oportunidades. ¡Gracias por tu comprensión!';
+      ? 'Felicidades! Has sido aceptado como beta tester de Nuvix Dev 🥵. Pronto recibirás más detalles sobre cómo empezar a probar nuestra aplicación. ¡Gracias por tu interés y apoyo!'
+      : 'Gracias por tu interés en ser beta tester de Nuvix. Lamentablemente, en esta ocasión no has sido seleccionado asi como tu ex no te seleccionó 😢. Esperamos contar contigo en futuras oportunidades. ¡Gracias por tu comprensión!';
 
     const sendNotifyUser = await transporter.sendMail({
       from: '"No reply <no-reply@example.com>"',
